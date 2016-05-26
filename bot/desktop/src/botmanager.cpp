@@ -9,7 +9,7 @@ BotManager *BotManager::instance()
 
 bool BotManager::start() const
 {
-    _bot -> connectToServer("j2sg@jabber.odyssey.net", "161t80u33x");
+    _bot -> connectToServer("bot1@jabber.odyssey.net", "1234");
 
     return true;
 }
