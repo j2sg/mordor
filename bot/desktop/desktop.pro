@@ -15,9 +15,11 @@ INCLUDEPATH += . include
 
 # Input
 SOURCES += src/main.cpp \
-    src/bot.cpp
+    src/bot.cpp \
+    src/botmanager.cpp
 
 HEADERS += \
-    include/bot.h
+    include/bot.h \
+    include/botmanager.h
 
 LIBS += -lqxmpp
