@@ -6,3 +6,6 @@ Bot *Bot::instance()
 
     return &bot;
 }
+
+Bot::Bot(QObject *parent) : QXmppClient(parent)
+{}

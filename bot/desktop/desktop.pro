@@ -8,6 +8,8 @@ OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
 
+QT += network xml
+
 DEPENDPATH += . include src
 INCLUDEPATH += . include
 
@@ -17,3 +19,5 @@ SOURCES += src/main.cpp \
 
 HEADERS += \
     include/bot.h
+
+LIBS += -lqxmpp

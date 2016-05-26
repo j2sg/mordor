@@ -1,11 +1,12 @@
-#include <iostream>
+#include <QCoreApplication>
 #include "bot.h"
-
-using namespace std;
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication app(argc, argv);
     Bot *bot = Bot::instance();
 
-    return 0;
+    Q_UNUSED(bot);
+
+    return app.exec();
 }
