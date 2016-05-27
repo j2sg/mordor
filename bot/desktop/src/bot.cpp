@@ -29,9 +29,11 @@ void Bot::itemsReceived(const QXmppDiscoveryIq& response)
     }
 
     foreach(QXmppMucRoom * room, _mucManager -> rooms()) {
-        qDebug() << room->jid();
-        room -> setNickName("bot");
-        room -> join();
+        if(room -> participants().length() < 10) {
+            room -> setNickName("bot");
+            room -> join();
+            break;
+        }
     }
 
 }
