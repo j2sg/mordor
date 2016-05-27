@@ -1,6 +1,7 @@
 #include "bot.h"
 #include <qxmpp/QXmppMucManager.h>
 #include <qxmpp/QXmppDiscoveryManager.h>
+#include <qxmpp/QXmppMessage.h>
 #include <QRegExp>
 #include <QDebug>
 
@@ -38,6 +39,11 @@ void Bot::itemsReceived(const QXmppDiscoveryIq& response)
 
 }
 
+void Bot::messageReceived(const QXmppMessage& message)
+{
+    qDebug() << message.body();
+}
+
 Bot::Bot(QObject *parent) : QXmppClient(parent)
 {
     createManagers();
@@ -54,6 +60,10 @@ void Bot::createManagers()
 
 void Bot::createConnections()
 {
-    connect(this, SIGNAL(connected()), this, SLOT(connected()));
-    connect(_discoveryManager, SIGNAL(itemsReceived(const QXmppDiscoveryIq&)), this, SLOT(itemsReceived(const QXmppDiscoveryIq&)));
+    connect(this, SIGNAL(connected()),
+            this, SLOT(connected()));
+    connect(_discoveryManager, SIGNAL(itemsReceived(const QXmppDiscoveryIq&)),
+            this, SLOT(itemsReceived(const QXmppDiscoveryIq&)));
+    connect(this, SIGNAL(messageReceived(QXmppMessage)),
+            this, SLOT(messageReceived(QXmppMessage)));
 }

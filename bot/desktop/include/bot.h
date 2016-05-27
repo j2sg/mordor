@@ -14,6 +14,7 @@ public:
 private slots:
     void connected();
     void itemsReceived(const QXmppDiscoveryIq& response);
+    void messageReceived(const QXmppMessage& message);
 private:
     Bot(QObject *parent = 0);
     ~Bot() {}
