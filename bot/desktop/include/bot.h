@@ -16,6 +16,7 @@ private:
     Bot(QObject *parent = 0);
     ~Bot() {}
     void createConnections();
+    void joinRoom();
 };
 
 #endif // BOT_H
