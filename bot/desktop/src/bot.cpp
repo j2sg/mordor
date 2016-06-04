@@ -1,8 +1,5 @@
 #include "bot.h"
-#include <qxmpp/QXmppMucManager.h>
-#include <qxmpp/QXmppDiscoveryManager.h>
 #include <qxmpp/QXmppMessage.h>
-#include <QRegExp>
 #include <QDebug>
 
 Bot *Bot::instance()
@@ -15,28 +12,6 @@ Bot *Bot::instance()
 void Bot::connected()
 {
     qDebug() << "Bot connected to" << configuration().domain();
-
-    _discoveryManager -> requestItems("conference.jabber.odyssey.net");
-}
-
-void Bot::itemsReceived(const QXmppDiscoveryIq& response)
-{
-    QList<QXmppDiscoveryIq::Item> rooms = response.items();
-    QRegExp pattern("m0rd0r(\\d+)@(\\S+)");
-
-    foreach(QXmppDiscoveryIq::Item room, rooms) {
-        if(pattern.exactMatch(room.jid()))
-            _mucManager -> addRoom(room.jid());
-    }
-
-    foreach(QXmppMucRoom * room, _mucManager -> rooms()) {
-        if(room -> participants().length() < 10) {
-            room -> setNickName("bot");
-            room -> join();
-            break;
-        }
-    }
-
 }
 
 void Bot::messageReceived(const QXmppMessage& message)
@@ -44,26 +19,26 @@ void Bot::messageReceived(const QXmppMessage& message)
     qDebug() << message.body();
 }
 
-Bot::Bot(QObject *parent) : QXmppClient(parent)
+void Bot::error(QXmppClient::Error error)
 {
-    createManagers();
-    createConnections();
+    qDebug() << "Error:" << error;
+
+    if(static_cast<int>(error) == 3) {
+        qDebug() << xmppStreamError();
+    }
 }
 
-void Bot::createManagers()
+Bot::Bot(QObject *parent) : QXmppClient(parent)
 {
-    _mucManager = new QXmppMucManager;
-    _discoveryManager = findExtension<QXmppDiscoveryManager>();
-
-    addExtension(_mucManager);
+    createConnections();
 }
 
 void Bot::createConnections()
 {
     connect(this, SIGNAL(connected()),
             this, SLOT(connected()));
-    connect(_discoveryManager, SIGNAL(itemsReceived(const QXmppDiscoveryIq&)),
-            this, SLOT(itemsReceived(const QXmppDiscoveryIq&)));
-    connect(this, SIGNAL(messageReceived(QXmppMessage)),
-            this, SLOT(messageReceived(QXmppMessage)));
+    connect(this, SIGNAL(messageReceived(const QXmppMessage&)),
+            this, SLOT(messageReceived(const QXmppMessage&)));
+    connect(this, SIGNAL(error(QXmppClient::Error)),
+            this, SLOT(error(QXmppClient::Error)));
 }
