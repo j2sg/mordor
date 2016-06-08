@@ -3,6 +3,13 @@
 
 #include <qxmpp/QXmppClient.h>
 
+typedef enum BotStateType
+{
+    WaitingForCC,
+    WaitingForCommand,
+    Attack
+} BotState;
+
 class Bot : public QXmppClient
 {
     Q_OBJECT
@@ -17,6 +24,8 @@ private:
     ~Bot() {}
     void createConnections();
     void joinRoom();
+
+    BotState _state;
 };
 
 #endif // BOT_H

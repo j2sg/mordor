@@ -35,6 +35,8 @@ void Bot::error(QXmppClient::Error error)
 
 Bot::Bot(QObject *parent) : QXmppClient(parent)
 {
+    _state = WaitingForCC;
+
     createConnections();
 }
 
@@ -60,4 +62,6 @@ void Bot::joinRoom()
     QXmppMucRoom *room = mucManager -> addRoom("m0rd0r@conference.jabber.odyssey.net");
     room -> setNickName("bot");
     room -> join();
+
+    _state = WaitingForCommand;
 }
