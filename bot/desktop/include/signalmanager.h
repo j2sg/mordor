@@ -8,7 +8,7 @@
 
     void setupUnixSignals();
     void unixHandler(int sig);
-#elif defined(Q_OS_WIN32) || defined(Q_IS_WIN64)
+#elif defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
     #include <windows.h>
 
     void setupWindowsSignals();
