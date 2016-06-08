@@ -8,6 +8,7 @@ class BotManager
 public:
     static BotManager *instance();
     bool start() const;
+    bool stop() const;
 private:
     BotManager();
     BotManager(const BotManager& /*botManager*/) {}

@@ -22,6 +22,14 @@ bool BotManager::start() const
     return true;
 }
 
+
+bool BotManager::stop() const
+{
+    _bot -> disconnectFromServer();
+
+    return true;
+}
+
 BotManager::BotManager()
 {
     _bot = Bot::instance();
