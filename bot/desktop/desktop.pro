@@ -17,11 +17,13 @@ INCLUDEPATH += . include
 SOURCES += src/main.cpp \
     src/bot.cpp \
     src/botmanager.cpp \
-    src/storagemanager.cpp
+    src/storagemanager.cpp \
+    src/signalmanager.cpp
 
 HEADERS += \
     include/bot.h \
     include/botmanager.h \
-    include/storagemanager.h
+    include/storagemanager.h \
+    include/signalmanager.h
 
 LIBS += -lqxmpp
