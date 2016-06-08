@@ -21,10 +21,24 @@
 #elif defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
     void setupWindowsSignals()
     {
+        SetConsoleCtrlHandler(windowsHandler, TRUE);
     }
 
     BOOL WINAPI windowsHandler(_In_ DWORD dwCtrlType)
     {
+        Q_UNUSED(dwCtrlType);
+
+        switch(dwCtrlType) {
+        case CTRL_C_EVENT:
+        case CTRL_BREAK_EVENT:
+        case CTRL_CLOSE_EVENT:
+        case CTRL_LOGOFF_EVENT:
+        case CTRL_SHUTDOWN_EVENT:
+            cleanup();
+            return TRUE;
+        default:
+            return FALSE;
+        }
     }
 #endif
 
