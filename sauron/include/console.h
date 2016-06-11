@@ -15,6 +15,7 @@ public slots:
 private:
     bool executeCommand(const QString& command);
     void quit();
+    void help();
     void createConnections();
 };
 
