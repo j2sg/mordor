@@ -16,7 +16,8 @@ INCLUDEPATH += . include
 # Input
 SOURCES += src/main.cpp \
     src/mainwindow.cpp \
-    src/connectdialog.cpp
+    src/connectdialog.cpp \
+    src/centralwidget.cpp
 
 LIBS += -lqxmpp
 
@@ -24,4 +25,5 @@ LIBS += -lqxmpp
 
 HEADERS += \
     include/mainwindow.h \
-    include/connectdialog.h
+    include/connectdialog.h \
+    include/centralwidget.h
