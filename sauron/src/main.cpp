@@ -1,14 +1,9 @@
-#include <QCoreApplication>
-#include "console.h"
+#include <QApplication>
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication app(argc, argv);
-    Console console;
-
-    QObject::connect(&console, SIGNAL(finished()), &app, SLOT(quit()));
-
-    console.run();
+    QApplication app(argc, argv);
 
     return app.exec();
+
 }

@@ -8,16 +8,14 @@ OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
 
-QT += network xml
+QT += widgets network xml
 
 DEPENDPATH += . include src
 INCLUDEPATH += . include
 
 # Input
-SOURCES += src/main.cpp \
-    src/console.cpp
+SOURCES += src/main.cpp
 
 LIBS += -lqxmpp
 
-HEADERS += \
-    include/console.h
+#HEADERS +=
