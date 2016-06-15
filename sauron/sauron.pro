@@ -14,8 +14,12 @@ DEPENDPATH += . include src
 INCLUDEPATH += . include
 
 # Input
-SOURCES += src/main.cpp
+SOURCES += src/main.cpp \
+    src/mainwindow.cpp
 
 LIBS += -lqxmpp
 
 #HEADERS +=
+
+HEADERS += \
+    include/mainwindow.h
