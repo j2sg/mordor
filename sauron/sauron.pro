@@ -26,4 +26,5 @@ LIBS += -lqxmpp
 HEADERS += \
     include/mainwindow.h \
     include/connectdialog.h \
-    include/centralwidget.h
+    include/centralwidget.h \
+    include/global.h
