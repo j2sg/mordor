@@ -1,6 +1,7 @@
 #include "mainwindow.h"
-#include "centralwidget.h"
 #include "global.h"
+#include "centralwidget.h"
+#include "xmppclient.h"
 #include <QAction>
 #include <QMenu>
 #include <QMenuBar>
@@ -13,7 +14,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-    _xmppClient = new QXmppClient(this);
+    _xmppClient = new XmppClient(this);
 
     createWidgets();
     createConnections();
@@ -30,13 +31,8 @@ void MainWindow::connectToCC()
         QString server = dialog.domain();
         QString username = dialog.username();
         QString password = dialog.password();
-        QXmppConfiguration configuration;
 
-        configuration.setResource(APPLICATION_NAME);
-        configuration.setJid(QString("%1@%2").arg(username).arg(server));
-        configuration.setPassword(password);
-
-        _xmppClient -> connectToServer(configuration);
+        _xmppClient -> connectToServer(QString("%1@%2").arg(username).arg(server), password);
     }
 }
 
@@ -62,9 +58,9 @@ void MainWindow::about()
                              .arg(APPLICATION_WEB));
 }
 
-void MainWindow::connectedOnXmppClient()
+void MainWindow::readyOnXmppClient()
 {
-    qDebug() << "Connected to server";
+    qDebug() << "Command && Control ready";
 
     setConnected(true);
 }
@@ -74,16 +70,6 @@ void MainWindow::disconnectedOnXmppClient()
     qDebug() << "Disconnected from server";
 
     setConnected(false);
-}
-
-void MainWindow::errorOnXmppClient(QXmppClient::Error error)
-{
-    qDebug() << "Error on client";
-}
-
-void MainWindow::messageReceivedOnXmppClient(const QXmppMessage& message)
-{
-    qDebug() << "Message received on client";
 }
 
 void MainWindow::createWidgets()
@@ -160,14 +146,10 @@ void MainWindow::createConnections()
             this, SLOT(close()));
     connect(_aboutAction, SIGNAL(triggered()),
             this, SLOT(about()));
-    connect(_xmppClient, SIGNAL(connected()),
-            this, SLOT(connectedOnXmppClient()));
+    connect(_xmppClient, SIGNAL(ready()),
+            this, SLOT(readyOnXmppClient()));
     connect(_xmppClient, SIGNAL(disconnected()),
             this, SLOT(disconnectedOnXmppClient()));
-    connect(_xmppClient, SIGNAL(error(QXmppClient::Error)),
-            this, SLOT(errorOnXmppClient(QXmppClient::Error)));
-    connect(_xmppClient, SIGNAL(messageReceived(const QXmppMessage&)),
-            this, SLOT(messageReceivedOnXmppClient(const QXmppMessage&)));
 }
 
 void MainWindow::setConnected(bool connected)

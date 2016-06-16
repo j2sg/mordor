@@ -17,7 +17,8 @@ INCLUDEPATH += . include
 SOURCES += src/main.cpp \
     src/mainwindow.cpp \
     src/connectdialog.cpp \
-    src/centralwidget.cpp
+    src/centralwidget.cpp \
+    src/xmppclient.cpp
 
 LIBS += -lqxmpp
 
@@ -27,4 +28,5 @@ HEADERS += \
     include/mainwindow.h \
     include/connectdialog.h \
     include/centralwidget.h \
-    include/global.h
+    include/global.h \
+    include/xmppclient.h

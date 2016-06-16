@@ -2,13 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <qxmpp/QXmppClient.h>
 
 class CentralWidget;
 class QAction;
 class QMenu;
 class QToolBar;
 class QLabel;
+class XmppClient;
 
 class MainWindow : public QMainWindow
 {
@@ -19,10 +19,8 @@ private slots:
     void connectToCC();
     void disconnectFromCC();
     void about();
-    void connectedOnXmppClient();
+    void readyOnXmppClient();
     void disconnectedOnXmppClient();
-    void errorOnXmppClient(QXmppClient::Error error);
-    void messageReceivedOnXmppClient(const QXmppMessage& message);
 private:
     void createWidgets();
     void createCentralWidget();
@@ -45,7 +43,7 @@ private:
     QToolBar *_attackToolBar;
     QLabel *_ccLabel;
 
-    QXmppClient *_xmppClient;
+    XmppClient *_xmppClient;
     bool _connected;
 };
 
