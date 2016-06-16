@@ -3,6 +3,10 @@
 
 #include <QWidget>
 
+class QTableView;
+class QTabWidget;
+class QTextEdit;
+
 class CentralWidget : public QWidget
 {
     Q_OBJECT
@@ -11,6 +15,11 @@ public:
 private:
     void createWidgets();
     void createConnections();
+
+    QTableView *_botnetTableView;
+    QTabWidget *_tabWidget;
+    QTableView *_attacksTableView;
+    QTextEdit *_eventsTextEdit;
 };
 
 #endif // CENTRALWIDGET_H
