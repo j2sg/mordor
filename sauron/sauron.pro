@@ -18,7 +18,9 @@ SOURCES += src/main.cpp \
     src/mainwindow.cpp \
     src/connectdialog.cpp \
     src/centralwidget.cpp \
-    src/xmppclient.cpp
+    src/xmppclient.cpp \
+    src/bot.cpp \
+    src/attack.cpp
 
 LIBS += -lqxmpp
 
@@ -29,4 +31,7 @@ HEADERS += \
     include/connectdialog.h \
     include/centralwidget.h \
     include/global.h \
-    include/xmppclient.h
+    include/xmppclient.h \
+    include/types.h \
+    include/bot.h \
+    include/attack.h
