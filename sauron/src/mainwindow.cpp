@@ -7,26 +7,38 @@
 #include <QToolBar>
 #include <QStatusBar>
 #include <QLabel>
+#include "connectdialog.h"
 #include <QMessageBox>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
+    _xmppClient = new QXmppClient(this);
+    _connected = false;
+
     createWidgets();
     createConnections();
-    setWindowTitle(tr("S4ur0n"));
+    setWindowTitle(APPLICATION_NAME);
     //setWindowIcon(QIcon(""));
-
-    _connected = false;
 }
 
 void MainWindow::connectToCC()
 {
+    ConnectDialog dialog(this);
 
+    if(dialog.exec() == QDialog::Accepted) {
+        QString server = dialog.domain();
+        QString username = dialog.username();
+        QString password = dialog.password();
+
+        _xmppClient -> connectToServer(QString("%1@%2").arg(username).arg(server), password);
+    }
 }
 
 void MainWindow::disconnectFromCC()
 {
-
+    if(_xmppClient -> isConnected())
+        _xmppClient -> disconnectFromServer();
 }
 
 void MainWindow::about()
@@ -43,6 +55,26 @@ void MainWindow::about()
                              .arg(AUTHOR_NAME)
                              .arg(AUTHOR_EMAIL)
                              .arg(APPLICATION_WEB));
+}
+
+void MainWindow::connectedOnXmppClient()
+{
+    qDebug() << "Connected to server";
+}
+
+void MainWindow::disconnectedOnXmppClient()
+{
+    qDebug() << "Disconnected from server";
+}
+
+void MainWindow::errorOnXmppClient(QXmppClient::Error error)
+{
+    qDebug() << "Error on client";
+}
+
+void MainWindow::messageReceivedOnXmppClient(const QXmppMessage& message)
+{
+    qDebug() << "Message received on client";
 }
 
 void MainWindow::createWidgets()
@@ -111,8 +143,20 @@ void MainWindow::createStatusBar()
 
 void MainWindow::createConnections()
 {
-    connect(_connectToCCAction, SIGNAL(triggered()), this, SLOT(connectToCC()));
-    connect(_disconnectFromCCAction, SIGNAL(triggered()), this, SLOT(disconnectFromCC()));
-    connect(_exitAction, SIGNAL(triggered()), this, SLOT(close()));
-    connect(_aboutAction, SIGNAL(triggered()), this, SLOT(about()));
+    connect(_connectToCCAction, SIGNAL(triggered()),
+            this, SLOT(connectToCC()));
+    connect(_disconnectFromCCAction, SIGNAL(triggered()),
+            this, SLOT(disconnectFromCC()));
+    connect(_exitAction, SIGNAL(triggered()),
+            this, SLOT(close()));
+    connect(_aboutAction, SIGNAL(triggered()),
+            this, SLOT(about()));
+    connect(_xmppClient, SIGNAL(connected()),
+            this, SLOT(connectedOnXmppClient()));
+    connect(_xmppClient, SIGNAL(disconnected()),
+            this, SLOT(disconnectedOnXmppClient()));
+    connect(_xmppClient, SIGNAL(error(QXmppClient::Error)),
+            this, SLOT(errorOnXmppClient(QXmppClient::Error)));
+    connect(_xmppClient, SIGNAL(messageReceived(const QXmppMessage&)),
+            this, SLOT(messageReceivedOnXmppClient(const QXmppMessage&)));
 }
