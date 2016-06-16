@@ -31,6 +31,7 @@ private:
     void createToolBar();
     void createStatusBar();
     void createConnections();
+    void setConnected(bool connected);
 
     CentralWidget *_centralWidget;
     QAction *_connectToCCAction;

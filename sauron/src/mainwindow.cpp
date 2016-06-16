@@ -14,12 +14,12 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     _xmppClient = new QXmppClient(this);
-    _connected = false;
 
     createWidgets();
     createConnections();
     setWindowTitle(APPLICATION_NAME);
     //setWindowIcon(QIcon(""));
+    setConnected(false);
 }
 
 void MainWindow::connectToCC()
@@ -30,8 +30,13 @@ void MainWindow::connectToCC()
         QString server = dialog.domain();
         QString username = dialog.username();
         QString password = dialog.password();
+        QXmppConfiguration configuration;
 
-        _xmppClient -> connectToServer(QString("%1@%2").arg(username).arg(server), password);
+        configuration.setResource(APPLICATION_NAME);
+        configuration.setJid(QString("%1@%2").arg(username).arg(server));
+        configuration.setPassword(password);
+
+        _xmppClient -> connectToServer(configuration);
     }
 }
 
@@ -60,11 +65,15 @@ void MainWindow::about()
 void MainWindow::connectedOnXmppClient()
 {
     qDebug() << "Connected to server";
+
+    setConnected(true);
 }
 
 void MainWindow::disconnectedOnXmppClient()
 {
     qDebug() << "Disconnected from server";
+
+    setConnected(false);
 }
 
 void MainWindow::errorOnXmppClient(QXmppClient::Error error)
@@ -159,4 +168,14 @@ void MainWindow::createConnections()
             this, SLOT(errorOnXmppClient(QXmppClient::Error)));
     connect(_xmppClient, SIGNAL(messageReceived(const QXmppMessage&)),
             this, SLOT(messageReceivedOnXmppClient(const QXmppMessage&)));
+}
+
+void MainWindow::setConnected(bool connected)
+{
+    _connected = connected;
+
+    _centralWidget -> setEnabled(_connected);
+    _connectToCCAction -> setEnabled(!_connected);
+    _disconnectFromCCAction -> setEnabled(_connected);
+    _ccLabel -> setText(_connected ? tr("Conectado como %1").arg(_xmppClient -> configuration().jid()) : tr("Desconectado"));
 }
