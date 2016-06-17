@@ -12,7 +12,8 @@ typedef enum ColumnBotEnum
     ColumnBotId,
     ColumnBotIP,
     ColumnBotOS,
-    ColumnBotStatus
+    ColumnBotStatus,
+    ColumnBotCount
 } ColumnBot;
 
 typedef enum ColumnAttackEnum

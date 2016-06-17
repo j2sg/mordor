@@ -1,4 +1,5 @@
 #include "centralwidget.h"
+#include "botnetmodel.h"
 #include <QTableView>
 #include <QTabWidget>
 #include <QTextEdit>
@@ -10,9 +11,16 @@ CentralWidget::CentralWidget(QWidget *parent) : QWidget(parent)
     createConnections();
 }
 
+CentralWidget::~CentralWidget()
+{
+    delete _botnetModel;
+}
+
 void CentralWidget::createWidgets()
 {
     _botnetTableView = new QTableView;
+    _botnetModel = new BotnetModel(new QList<Bot *>());
+    _botnetTableView -> setModel(_botnetModel);
 
     _tabWidget = new QTabWidget;
 
