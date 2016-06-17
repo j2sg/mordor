@@ -8,6 +8,7 @@
 #include <QToolBar>
 #include <QStatusBar>
 #include <QLabel>
+#include <QCloseEvent>
 #include "connectdialog.h"
 #include <QMessageBox>
 #include <QDebug>
@@ -21,6 +22,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setWindowTitle(APPLICATION_NAME);
     //setWindowIcon(QIcon(""));
     setConnected(false);
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    if(verifyExit()) {
+        disconnectFromCC();
+        event -> accept();
+    } else
+        event -> ignore();
 }
 
 void MainWindow::connectToCC()
@@ -160,4 +170,12 @@ void MainWindow::setConnected(bool connected)
     _connectToCCAction -> setEnabled(!_connected);
     _disconnectFromCCAction -> setEnabled(_connected);
     _ccLabel -> setText(_connected ? tr("Conectado como %1").arg(_xmppClient -> configuration().jid()) : tr("Desconectado"));
+}
+
+bool MainWindow::verifyExit()
+{
+    return QMessageBox::question(this, tr("Confirmar salida"),
+                                 tr("¿Esta seguro de querer abandonar la aplicacion?"),
+                                 QMessageBox::Yes | QMessageBox::Default |
+                                 QMessageBox::No) == QMessageBox::Yes;
 }

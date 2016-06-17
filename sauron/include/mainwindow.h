@@ -15,6 +15,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 public:
     MainWindow(QWidget *parent = 0);
+protected:
+    void closeEvent(QCloseEvent *event);
 private slots:
     void connectToCC();
     void disconnectFromCC();
@@ -30,6 +32,7 @@ private:
     void createStatusBar();
     void createConnections();
     void setConnected(bool connected);
+    bool verifyExit();
 
     CentralWidget *_centralWidget;
     QAction *_connectToCCAction;
