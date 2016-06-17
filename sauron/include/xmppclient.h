@@ -17,6 +17,7 @@ private slots:
     void errorOnXmppClient(QXmppClient::Error error);
     void messageReceivedOnXmppClient(const QXmppMessage& message);
 private:
+    void joinRoom();
     void createConnections();
 };
 

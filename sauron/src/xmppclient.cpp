@@ -1,5 +1,6 @@
 #include "xmppclient.h"
 #include "global.h"
+#include <qxmpp/QXmppMucManager.h>
 #include <QDebug>
 
 XmppClient::XmppClient(QObject *parent) : QXmppClient(parent)
@@ -22,6 +23,8 @@ void XmppClient::connectedOnXmppClient()
 {
     qDebug() << "Connected to server";
 
+    joinRoom();
+
     emit ready();
 }
 
@@ -33,6 +36,24 @@ void XmppClient::errorOnXmppClient(QXmppClient::Error error)
 void XmppClient::messageReceivedOnXmppClient(const QXmppMessage& message)
 {
     qDebug() << "Message received on client";
+}
+
+void XmppClient::joinRoom()
+{
+    QXmppMucManager *manager = findExtension<QXmppMucManager>();
+
+    if(!manager) {
+        manager = new QXmppMucManager;
+        addExtension(manager);
+    }
+
+    QXmppMucRoom *room = manager -> addRoom(QString("%1@%2.%3")
+                                            .arg(ROOM)
+                                            .arg(DEFAULT_MUC)
+                                            .arg(configuration().domain()));
+
+    room -> setNickName(NICKNAME);
+    room -> join();
 }
 
 void XmppClient::createConnections()
