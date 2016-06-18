@@ -23,4 +23,10 @@ typedef enum ColumnAttackEnum
     ColumnAttackBots
 } ColumnAttack;
 
+typedef enum CommandTypeEnum
+{
+    NoOp,
+    GetBotnetStatus
+} CommandType;
+
 #endif // TYPES_H

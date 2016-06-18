@@ -21,7 +21,8 @@ SOURCES += src/main.cpp \
     src/xmppclient.cpp \
     src/bot.cpp \
     src/attack.cpp \
-    src/botnetmodel.cpp
+    src/botnetmodel.cpp \
+    src/command.cpp
 
 LIBS += -lqxmpp
 
@@ -36,4 +37,5 @@ HEADERS += \
     include/types.h \
     include/bot.h \
     include/attack.h \
-    include/botnetmodel.h
+    include/botnetmodel.h \
+    include/command.h
