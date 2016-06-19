@@ -13,7 +13,7 @@ class XmppClient : public QXmppClient
 {
     Q_OBJECT
 public:
-    XmppClient(const QString& nick, const QString& resource,
+    XmppClient(const QString& resource,
                const QString& roomName = DEFAULT_ROOM_NAME,
                const QString& muc = DEFAULT_MUC, QObject *parent = 0);
 signals:
@@ -31,7 +31,6 @@ private:
     void joinRoom();
     void createConnections();
 
-    QString _nick;
     QString _resource;
     QString _roomName;
     QString _muc;

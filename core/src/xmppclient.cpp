@@ -4,9 +4,8 @@
 #include <qxmpp/QXmppMessage.h>
 #include <QDebug>
 
-XmppClient::XmppClient(const QString& nick, const QString& resource,
-                       const QString& roomName, const QString& muc, QObject *parent)
-    : QXmppClient(parent), _nick(nick), _resource(resource), _roomName(roomName), _muc(muc)
+XmppClient::XmppClient(const QString& resource, const QString& roomName, const QString& muc, QObject *parent)
+    : QXmppClient(parent), _resource(resource), _roomName(roomName), _muc(muc)
 {
     _room = 0;
 
@@ -71,7 +70,7 @@ void XmppClient::joinRoom()
     connect(_room, SIGNAL(participantRemoved(const QString&)),
             this, SIGNAL(botRemoved(const QString&)));
 
-    _room -> setNickName(_nick);
+    _room -> setNickName(configuration().jid().split('@').at(0));
     _room -> join();
 }
 

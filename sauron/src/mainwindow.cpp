@@ -16,7 +16,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-    _xmppClient = new XmppClient(NICKNAME, APPLICATION_NAME);
+    _xmppClient = new XmppClient(APPLICATION_NAME);
     _xmppClient -> setParent(this);
 
     createWidgets();
