@@ -10,8 +10,6 @@
 #define APPLICATION_VERSION   "0.0.1"
 #define APPLICATION_YEARS     "2016"
 #define APPLICATION_WEB       "https://bitbucket.org/j2sg/mordor"
-#define DEFAULT_MUC           "conference"
-#define ROOM                  "m0rd0r"
 #define NICKNAME              APPLICATION_NAME
 
 #endif // GLOBAL_H

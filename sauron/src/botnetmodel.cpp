@@ -1,6 +1,5 @@
 #include "botnetmodel.h"
 #include "bot.h"
-#include "types.h"
 #include <QColor>
 
 BotnetModel::BotnetModel(QList<Bot *> *bots, QObject *parent)

