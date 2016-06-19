@@ -11,19 +11,17 @@ RCC_DIR = build
 QT += network xml
 
 DEPENDPATH += . include src
-INCLUDEPATH += . include
+INCLUDEPATH += . include ../core/include
 
 # Input
 SOURCES += src/main.cpp \
-    src/bot.cpp \
     src/botmanager.cpp \
     src/storagemanager.cpp \
     src/signalmanager.cpp
 
 HEADERS += \
-    include/bot.h \
     include/botmanager.h \
     include/storagemanager.h \
     include/signalmanager.h
 
-LIBS += -lqxmpp
+LIBS += -L../core -lcore -lqxmpp

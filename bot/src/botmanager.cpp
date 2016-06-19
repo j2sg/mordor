@@ -1,4 +1,5 @@
 #include "botmanager.h"
+#include "xmppclient.h"
 #include "storagemanager.h"
 #include <QDebug>
 
@@ -32,5 +33,5 @@ bool BotManager::stop() const
 
 BotManager::BotManager()
 {
-    _bot = Bot::instance();
+    _bot = new XmppClient("bot", "bot");
 }

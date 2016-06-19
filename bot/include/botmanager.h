@@ -1,7 +1,7 @@
 #ifndef BOTMANAGER_H
 #define BOTMANAGER_H
 
-#include "bot.h"
+class XmppClient;
 
 class BotManager
 {
@@ -15,7 +15,7 @@ private:
     BotManager& operator=(const BotManager& /*botManager*/) { return *this; }
     ~BotManager() {}
 
-    Bot *_bot;
+    XmppClient *_bot;
 };
 
 #endif // BOTMANAGER_H
