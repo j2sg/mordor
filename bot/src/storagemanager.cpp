@@ -18,7 +18,6 @@ bool StorageManager::createConfig(bool overwrite)
     setting.setValue("Executed", true);
     setting.setValue("jid",      "");
     setting.setValue("password", "");
-    setting.setValue("nick",     "");
 
     return true;
 }

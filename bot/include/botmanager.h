@@ -1,19 +1,21 @@
 #ifndef BOTMANAGER_H
 #define BOTMANAGER_H
 
+#include <QObject>
+
 class XmppClient;
 
-class BotManager
+class BotManager : public QObject
 {
+    Q_OBJECT
 public:
     static BotManager *instance();
     bool start() const;
     bool stop() const;
 private:
     BotManager();
-    BotManager(const BotManager& /*botManager*/) {}
-    BotManager& operator=(const BotManager& /*botManager*/) { return *this; }
-    ~BotManager() {}
+    ~BotManager();
+    bool setup();
 
     XmppClient *_bot;
 };

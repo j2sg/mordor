@@ -1,4 +1,5 @@
 #include "botmanager.h"
+#include "global.h"
 #include "xmppclient.h"
 #include "storagemanager.h"
 #include <QDebug>
@@ -12,13 +13,10 @@ BotManager *BotManager::instance()
 
 bool BotManager::start() const
 {
-    bool existsConfig = StorageManager::existsConfig();
-    qDebug() << "Exists Config?" << (existsConfig ? "Yes" : "No");
+    QString jid = StorageManager::readConfig("jid").toString();
+    QString password = StorageManager::readConfig("password").toString();
 
-    if(!existsConfig)
-        StorageManager::createConfig();
-
-    _bot -> connectToServer("bot1@jabber.odyssey.net", "1234");
+    _bot -> connectToServer(jid, password);
 
     return true;
 }
@@ -33,5 +31,24 @@ bool BotManager::stop() const
 
 BotManager::BotManager()
 {
-    _bot = new XmppClient("bot", "bot");
+    if(setup())
+        _bot = new XmppClient(APPLICATION_NAME);
+}
+
+BotManager::~BotManager()
+{
+    stop();
+
+    delete _bot;
+}
+
+bool BotManager::setup()
+{
+    if(!StorageManager::existsConfig()) {
+        StorageManager::createConfig();
+        StorageManager::writeConfig("jid", "bot1@jabber.odyssey.net");
+        StorageManager::writeConfig("password", "1234");
+    }
+
+    return true;
 }
