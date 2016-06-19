@@ -22,6 +22,7 @@ SOURCES += src/main.cpp \
 HEADERS += \
     include/botmanager.h \
     include/storagemanager.h \
-    include/signalmanager.h
+    include/signalmanager.h \
+    include/global.h
 
 LIBS += -L../core -lcore -lqxmpp
