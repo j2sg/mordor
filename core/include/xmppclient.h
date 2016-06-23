@@ -26,10 +26,11 @@ public slots:
 private slots:
     void connectedOnXmppClient();
     void errorOnXmppClient(QXmppClient::Error error);
-    void messageReceivedOnXmppClient(const QXmppMessage& message);
+    void messageReceivedOnRoom(const QXmppMessage& message);
 private:
     void joinRoom();
     void createConnections();
+    void createRoomConnections();
 
     QString _resource;
     QString _roomName;

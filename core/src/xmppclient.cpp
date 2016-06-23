@@ -40,7 +40,7 @@ void XmppClient::errorOnXmppClient(QXmppClient::Error error)
     qDebug() << "Error on client:" << error;
 }
 
-void XmppClient::messageReceivedOnXmppClient(const QXmppMessage& message)
+void XmppClient::messageReceivedOnRoom(const QXmppMessage& message)
 {
     qDebug() << "Message received on client";
     qDebug() << "Type:"  << message.type();
@@ -52,25 +52,23 @@ void XmppClient::messageReceivedOnXmppClient(const QXmppMessage& message)
 
 void XmppClient::joinRoom()
 {
-    QXmppMucManager *manager = findExtension<QXmppMucManager>();
+    if(!_room) {
+        QXmppMucManager *manager = findExtension<QXmppMucManager>();
 
-    if(!manager) {
-        manager = new QXmppMucManager;
-        addExtension(manager);
+        if(!manager) {
+            manager = new QXmppMucManager;
+            addExtension(manager);
+        }
+
+        _room = manager -> addRoom(QString("%1@%2.%3").arg(_roomName)
+                                                      .arg(_muc)
+                                                      .arg(configuration().domain()));
+
+        _room -> setNickName(configuration().jid().split('@').at(0));
+
+        createRoomConnections();
     }
 
-    _room = manager -> addRoom(QString("%1@%2.%3").arg(_roomName)
-                                                  .arg(_muc)
-                                                  .arg(configuration().domain()));
-
-    connect(_room, SIGNAL(joined()),
-            this, SIGNAL(ready()));
-    connect(_room, SIGNAL(participantAdded(const QString&)),
-            this, SIGNAL(botAdded(const QString&)));
-    connect(_room, SIGNAL(participantRemoved(const QString&)),
-            this, SIGNAL(botRemoved(const QString&)));
-
-    _room -> setNickName(configuration().jid().split('@').at(0));
     _room -> join();
 }
 
@@ -80,6 +78,16 @@ void XmppClient::createConnections()
             this, SLOT(connectedOnXmppClient()));
     connect(this, SIGNAL(error(QXmppClient::Error)),
             this, SLOT(errorOnXmppClient(QXmppClient::Error)));
-    connect(this, SIGNAL(messageReceived(const QXmppMessage&)),
-            this, SLOT(messageReceivedOnXmppClient(const QXmppMessage&)));
+}
+
+void XmppClient::createRoomConnections()
+{
+    connect(_room, SIGNAL(joined()),
+            this, SIGNAL(ready()));
+    connect(_room, SIGNAL(messageReceived(const QXmppMessage&)),
+            this, SLOT(messageReceivedOnRoom(QXmppMessage)));
+    connect(_room, SIGNAL(participantAdded(const QString&)),
+            this, SIGNAL(botAdded(const QString&)));
+    connect(_room, SIGNAL(participantRemoved(const QString&)),
+            this, SIGNAL(botRemoved(const QString&)));
 }
