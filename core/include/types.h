@@ -8,10 +8,4 @@ typedef enum BotStateEnum
     Attack
 } BotState;
 
-typedef enum CommandTypeEnum
-{
-    NoOp,
-    GetBotnetStatus
-} CommandType;
-
 #endif // TYPES_H

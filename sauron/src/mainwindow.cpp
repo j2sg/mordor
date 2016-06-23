@@ -3,7 +3,6 @@
 #include "centralwidget.h"
 #include "connectdialog.h"
 #include "xmppclient.h"
-#include "command.h"
 #include <QAction>
 #include <QMenu>
 #include <QMenuBar>
@@ -75,10 +74,6 @@ void MainWindow::readyOnXmppClient()
     qDebug() << "Command && Control ready";
 
     setConnected(true);
-
-    Command command(GetBotnetStatus);
-
-    _xmppClient -> sendCommand(command);
 }
 
 void MainWindow::disconnectedOnXmppClient()
