@@ -5,8 +5,13 @@
 GetStatusCommand::GetStatusCommand(int id) : Command(id)
 {}
 
-GetStatusCommand::GetStatusCommand(const QString& json) : Command(json)
-{}
+void GetStatusCommand::fromJson(const QString& json)
+{
+    QJsonDocument document = QJsonDocument::fromJson(json.toUtf8());
+    QJsonObject object = document.object();
+
+    _id = object["id"].toInt();
+}
 
 QString GetStatusCommand::toJson() const
 {
