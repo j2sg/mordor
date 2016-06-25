@@ -2,6 +2,12 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+GetStatusCommand::GetStatusCommand(int id) : Command(id)
+{}
+
+GetStatusCommand::GetStatusCommand(const QString& json) : Command(json)
+{}
+
 QString GetStatusCommand::toJson() const
 {
     QJsonObject object;

@@ -6,6 +6,8 @@
 class GetStatusCommand : public Command
 {
 public:
+    GetStatusCommand(int id);
+    GetStatusCommand(const QString& json);
     QString toJson() const;
 
 };
