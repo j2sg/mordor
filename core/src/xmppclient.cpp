@@ -1,5 +1,6 @@
 #include "xmppclient.h"
-#include "message.h"
+#include "getstatuscommand.h"
+#include "botstateresponse.h"
 #include <qxmpp/QXmppMucManager.h>
 #include <qxmpp/QXmppMessage.h>
 #include <QDebug>
@@ -45,15 +46,18 @@ void XmppClient::errorOnXmppClient(QXmppClient::Error error)
     qDebug() << "Error on client:" << error;
 }
 
-void XmppClient::messageReceivedOnRoom(const QXmppMessage& message)
+void XmppClient::messageReceivedOnRoom(const QXmppMessage& xmppMessage)
 {
-    if(message.type() == QXmppMessage::GroupChat) {
-        qDebug() << "Message received on client";
-        qDebug() << "Type:"  << message.type();
-        qDebug() << "To:"    << message.to();
-        qDebug() << "From:"    << message.from();
-        qDebug() << "Stamp:" << message.stamp();
-        qDebug() << "Body:"  << message.body();
+    if(xmppMessage.type() == QXmppMessage::GroupChat) {
+        Message *message = Message::createFromJson(xmppMessage.body());
+        message -> setFrom(xmppMessage.from());
+
+        if(dynamic_cast<GetStatusCommand *>(message) != 0)
+            emit commandReceived(*message);
+        else if(dynamic_cast<BotStateResponse *>(message) != 0)
+            emit responseReceived(*message);
+
+        delete message;
     }
 }
 
