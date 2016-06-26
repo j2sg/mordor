@@ -42,5 +42,10 @@ Message *Message::createFromJson(const QString& json)
     QJsonDocument document = QJsonDocument::fromJson(json.toUtf8());
     QJsonObject object = document.object();
 
-    return Message::createFromType(object["type"].toString());
+    Message *message = Message::createFromType(object["type"].toString());
+
+    if(message)
+        message -> fromJson(json);
+
+    return message;
 }
