@@ -42,7 +42,6 @@ void BotStateResponse::fromJson(const QString& json)
     QJsonObject object = document.object();
 
     _id = object["id"].toInt();
-    _from = object["from"].toString();
     _ip = object["ip"].toString();
     _os = object["os"].toString();
     _state = static_cast<BotState>(object["state"].toInt());
@@ -54,7 +53,6 @@ QString BotStateResponse::toJson() const
 
     object["id"] = _id;
     object["type"] = "BOT_STATE_RES";
-    object["from"] = _from;
     object["ip"] = _ip;
     object["os"] = _os;
     object["state"] = static_cast<int>(_state);

@@ -11,7 +11,6 @@ void GetStatusCommand::fromJson(const QString& json)
     QJsonObject object = document.object();
 
     _id = object["id"].toInt();
-    _from = object["from"].toString();
 }
 
 QString GetStatusCommand::toJson() const
@@ -20,7 +19,6 @@ QString GetStatusCommand::toJson() const
 
     object["id"] = _id;
     object["type"] = "GET_STATUS_CMD";
-    object["from"] = _from;
 
     return QJsonDocument(object).toJson(QJsonDocument::Compact);
 }
