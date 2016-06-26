@@ -9,6 +9,7 @@ class QMenu;
 class QToolBar;
 class QLabel;
 class XmppClient;
+class Message;
 
 class MainWindow : public QMainWindow
 {
@@ -23,6 +24,7 @@ private slots:
     void about();
     void readyOnXmppClient();
     void disconnectedOnXmppClient();
+    void responseReceivedOnXmppClient(const Message& response);
 private:
     void createWidgets();
     void createCentralWidget();
