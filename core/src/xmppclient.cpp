@@ -49,15 +49,17 @@ void XmppClient::errorOnXmppClient(QXmppClient::Error error)
 void XmppClient::messageReceivedOnRoom(const QXmppMessage& xmppMessage)
 {
     if(xmppMessage.type() == QXmppMessage::GroupChat) {
-        Message *message = Message::createFromJson(xmppMessage.body());
-        message -> setFrom(xmppMessage.from());
+        if(xmppMessage.stamp().isNull()) {
+            Message *message = Message::createFromJson(xmppMessage.body());
+            message -> setFrom(xmppMessage.from());
 
-        if(dynamic_cast<GetStatusCommand *>(message) != 0)
-            emit commandReceived(*message);
-        else if(dynamic_cast<BotStateResponse *>(message) != 0)
-            emit responseReceived(*message);
+            if(dynamic_cast<GetStatusCommand *>(message) != 0)
+                emit commandReceived(*message);
+            else if(dynamic_cast<BotStateResponse *>(message) != 0)
+                emit responseReceived(*message);
 
-        delete message;
+            delete message;
+        }
     }
 }
 
