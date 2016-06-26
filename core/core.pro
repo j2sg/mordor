@@ -19,10 +19,14 @@ HEADERS += include/attack.h \
            include/command.h \
            include/types.h \
            include/xmppclient.h \
-    include/getstatuscommand.h
+    include/getstatuscommand.h \
+    include/response.h \
+    include/botstateresponse.h
 
 SOURCES += src/attack.cpp src/bot.cpp src/xmppclient.cpp \
     src/getstatuscommand.cpp \
-    src/command.cpp
+    src/command.cpp \
+    src/response.cpp \
+    src/botstateresponse.cpp
 
 LIBS += -lqxmpp

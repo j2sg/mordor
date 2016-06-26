@@ -3,6 +3,7 @@
 
 typedef enum BotStateEnum
 {
+    UndefinedState,
     WaitingForCC,
     WaitingForCommand,
     Attack
