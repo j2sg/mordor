@@ -1,13 +1,13 @@
 #ifndef BOTSTATERESPONSE_H
 #define BOTSTATERESPONSE_H
 
-#include "response.h"
+#include "message.h"
 #include "types.h"
 
-class BotStateResponse : public Response
+class BotStateResponse : public Message
 {
 public:
-    BotStateResponse(int id = NO_RES_ID, const QString& from = "", const QString& ip = "", const QString& os = "", BotState state = UndefinedState);
+    BotStateResponse(int id = NO_MSG_ID, const QString& from = "", const QString& ip = "", const QString& os = "", BotState state = UndefinedState);
     void setIp(const QString& ip);
     const QString& ip() const;
     void setOs(const QString& os);

@@ -16,17 +16,15 @@ INCLUDEPATH += . include
 # Input
 HEADERS += include/attack.h \
            include/bot.h \
-           include/command.h \
            include/types.h \
            include/xmppclient.h \
     include/getstatuscommand.h \
-    include/response.h \
-    include/botstateresponse.h
+    include/botstateresponse.h \
+    include/message.h
 
 SOURCES += src/attack.cpp src/bot.cpp src/xmppclient.cpp \
     src/getstatuscommand.cpp \
-    src/command.cpp \
-    src/response.cpp \
-    src/botstateresponse.cpp
+    src/botstateresponse.cpp \
+    src/message.cpp
 
 LIBS += -lqxmpp

@@ -3,7 +3,7 @@
 #include <QJsonObject>
 
 BotStateResponse::BotStateResponse(int id, const QString& from, const QString &ip, const QString &os, BotState state)
-    : Response(id, from), _ip(ip), _os(os), _state(state)
+    : Message(id, from), _ip(ip), _os(os), _state(state)
 {}
 
 void BotStateResponse::setIp(const QString& ip)
@@ -53,7 +53,7 @@ QString BotStateResponse::toJson() const
     QJsonObject object;
 
     object["id"] = _id;
-    object["type"] = "BOT_STATE";
+    object["type"] = "BOT_STATE_RES";
     object["from"] = _from;
     object["ip"] = _ip;
     object["os"] = _os;

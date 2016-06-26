@@ -1,12 +1,12 @@
 #ifndef GETSTATUSCOMMAND_H
 #define GETSTATUSCOMMAND_H
 
-#include "command.h"
+#include "message.h"
 
-class GetStatusCommand : public Command
+class GetStatusCommand : public Message
 {
 public:
-    GetStatusCommand(int id = NO_CMD_ID);
+    GetStatusCommand(int id = NO_MSG_ID, const QString& from = "");
     void fromJson(const QString& json);
     QString toJson() const;
 };
