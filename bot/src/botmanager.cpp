@@ -2,6 +2,8 @@
 #include "global.h"
 #include "xmppclient.h"
 #include "storagemanager.h"
+#include "getstatuscommand.h"
+#include "botstateresponse.h"
 #include <QDebug>
 
 BotManager *BotManager::instance()
@@ -29,10 +31,17 @@ bool BotManager::stop() const
     return true;
 }
 
+void BotManager::commandReceivedOnBot(const Message& command)
+{
+    qDebug() << "Command received from" << command.from();
+}
+
 BotManager::BotManager()
 {
     if(setup())
         _bot = new XmppClient(APPLICATION_NAME);
+
+    createConnections();
 }
 
 BotManager::~BotManager()
@@ -51,4 +60,10 @@ bool BotManager::setup()
     }
 
     return true;
+}
+
+void BotManager::createConnections()
+{
+    connect(_bot, SIGNAL(commandReceived(const Message&)),
+            this, SLOT(commandReceivedOnBot(const   Message&)));
 }

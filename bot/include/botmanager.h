@@ -4,6 +4,7 @@
 #include <QObject>
 
 class XmppClient;
+class Message;
 
 class BotManager : public QObject
 {
@@ -12,10 +13,13 @@ public:
     static BotManager *instance();
     bool start() const;
     bool stop() const;
+private slots:
+    void commandReceivedOnBot(const Message& command);
 private:
     BotManager();
     ~BotManager();
     bool setup();
+    void createConnections();
 
     XmppClient *_bot;
 };
