@@ -1,5 +1,5 @@
 #include "xmppclient.h"
-#include "command.h"
+#include "message.h"
 #include <qxmpp/QXmppMucManager.h>
 #include <qxmpp/QXmppMessage.h>
 #include <QDebug>
@@ -23,9 +23,14 @@ void XmppClient::connectToServer(const QString &jid, const QString &password)
     QXmppClient::connectToServer(configuration);
 }
 
-void XmppClient::sendCommand(const Command& command)
+void XmppClient::sendCommand(const Message& command)
 {
     _room -> sendMessage(command.toJson());
+}
+
+void XmppClient::sendResponse(const Message& response)
+{
+    _room -> sendMessage(response.toJson());
 }
 
 void XmppClient::connectedOnXmppClient()
@@ -42,12 +47,14 @@ void XmppClient::errorOnXmppClient(QXmppClient::Error error)
 
 void XmppClient::messageReceivedOnRoom(const QXmppMessage& message)
 {
-    qDebug() << "Message received on client";
-    qDebug() << "Type:"  << message.type();
-    qDebug() << "To:"    << message.to();
-    qDebug() << "From:"    << message.from();
-    qDebug() << "Stamp:" << message.stamp();
-    qDebug() << "Body:"  << message.body();
+    if(message.type() == QXmppMessage::GroupChat) {
+        qDebug() << "Message received on client";
+        qDebug() << "Type:"  << message.type();
+        qDebug() << "To:"    << message.to();
+        qDebug() << "From:"    << message.from();
+        qDebug() << "Stamp:" << message.stamp();
+        qDebug() << "Body:"  << message.body();
+    }
 }
 
 void XmppClient::joinRoom()

@@ -7,7 +7,7 @@
 #define DEFAULT_MUC       "conference"
 
 class QXmppMucRoom;
-class Command;
+class Message;
 
 class XmppClient : public QXmppClient
 {
@@ -18,11 +18,14 @@ public:
                const QString& muc = DEFAULT_MUC, QObject *parent = 0);
 signals:
     void ready();
+    void commandReceived(const Message& command);
+    void responseReceived(const Message& response);
     void botAdded(const QString &jid);
     void botRemoved(const QString &jid);
 public slots:
     void connectToServer(const QString &jid, const QString &password);
-    void sendCommand(const Command& command);
+    void sendCommand(const Message& command);
+    void sendResponse(const Message& response);
 private slots:
     void connectedOnXmppClient();
     void errorOnXmppClient(QXmppClient::Error error);
