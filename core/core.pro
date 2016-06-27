@@ -14,7 +14,7 @@ DEPENDPATH += . include src
 INCLUDEPATH += . include
 
 # Input
-HEADERS += include/attack.h \
+HEADERS += \
            include/bot.h \
            include/types.h \
            include/xmppclient.h \
@@ -22,7 +22,7 @@ HEADERS += include/attack.h \
     include/botstateresponse.h \
     include/message.h
 
-SOURCES += src/attack.cpp src/bot.cpp src/xmppclient.cpp \
+SOURCES += src/bot.cpp src/xmppclient.cpp \
     src/getstatuscommand.cpp \
     src/botstateresponse.cpp \
     src/message.cpp
