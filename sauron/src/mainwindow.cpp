@@ -97,12 +97,10 @@ void MainWindow::responseReceivedOnXmppClient(Message *response)
     qDebug() << "Response received from" << response -> from();
 
     if(BotStateResponse *botStateResponse = dynamic_cast<BotStateResponse *>(response)) {
-        qDebug() << "ID:" << botStateResponse -> bot() -> id();
-        qDebug() << "IP:" << botStateResponse -> bot() -> ip();
-        qDebug() << "OS:" << botStateResponse -> bot() -> os();
-        qDebug() << "State:" << static_cast<int>(botStateResponse -> bot() -> state());
         _centralWidget -> addBot(new Bot(*botStateResponse -> bot()));
     }
+
+    delete response;
 }
 
 void MainWindow::createWidgets()

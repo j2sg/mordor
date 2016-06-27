@@ -45,6 +45,8 @@ void BotManager::commandReceivedOnBot(Message *command)
 
         _xmppClient -> sendResponse(*response);
     }
+
+    delete command;
 }
 
 void BotManager::finishedOnNetworkAccessManager(QNetworkReply *reply)
