@@ -1,5 +1,4 @@
 #include <QCoreApplication>
-#include "signalmanager.h"
 #include "botmanager.h"
 #include "global.h"
 
@@ -27,6 +26,4 @@ void setupApplication(QCoreApplication *app)
     app -> setOrganizationDomain(ORGANIZATION_DOMAIN);
     app -> setApplicationName(APPLICATION_NAME);
     app -> setApplicationVersion(APPLICATION_VERSION);
-
-    setupSignals();
 }

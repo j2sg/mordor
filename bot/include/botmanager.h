@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#define IP_ADDRESS_API "https://api.ipify.org"
+#define IP_ADDRESS_API "http://api.ipify.org"
 
 class XmppClient;
 class Bot;
