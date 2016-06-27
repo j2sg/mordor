@@ -53,12 +53,10 @@ void XmppClient::messageReceivedOnRoom(const QXmppMessage& xmppMessage)
             Message *message = Message::createFromJson(xmppMessage.body());
             message -> setFrom(xmppMessage.from());
 
-            if(dynamic_cast<GetStatusCommand *>(message) != 0)
-                emit commandReceived(*message);
-            else if(dynamic_cast<BotStateResponse *>(message) != 0)
-                emit responseReceived(*message);
-
-            delete message;
+            if(dynamic_cast<GetStatusCommand *>(message))
+                emit commandReceived(message);
+            else if(dynamic_cast<BotStateResponse *>(message))
+                emit responseReceived(message);
         }
     }
 }

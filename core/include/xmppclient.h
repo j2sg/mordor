@@ -18,8 +18,8 @@ public:
                const QString& muc = DEFAULT_MUC, QObject *parent = 0);
 signals:
     void ready();
-    void commandReceived(const Message& command);
-    void responseReceived(const Message& response);
+    void commandReceived(Message *command);
+    void responseReceived(Message *response);
     void botAdded(const QString &jid);
     void botRemoved(const QString &jid);
 public slots:
