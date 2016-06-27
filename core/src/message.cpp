@@ -1,5 +1,6 @@
 #include "message.h"
 #include "getstatuscommand.h"
+#include "getbotstatecommand.h"
 #include "botstateresponse.h"
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -31,6 +32,8 @@ Message *Message::createFromType(const QString& type)
 {
     if(type == "GET_STATUS_CMD")
         return new GetStatusCommand;
+    else if(type == "GET_BOT_STATE_CMD")
+        return new GetBotStateCommand;
     else if(type == "BOT_STATE_RES")
         return new BotStateResponse;
 
