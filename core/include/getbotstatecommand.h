@@ -6,13 +6,9 @@
 class GetBotStateCommand : public Message
 {
 public:
-    GetBotStateCommand(const QString& to = "", int id = NO_MSG_ID, const QString& from = "");
-    void setTo(const QString& to);
-    const QString& to() const;
+    GetBotStateCommand(int id = NO_MSG_ID, const QString& from = "", const QString& to = "");
     void fromJson(const QString& json);
     QString toJson() const;
-private:
-    QString _to;
 };
 
 #endif // GETBOTSTATECOMMAND_H

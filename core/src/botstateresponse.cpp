@@ -3,8 +3,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-BotStateResponse::BotStateResponse(Bot *bot, int id, const QString& from)
-    : Message(id, from), _bot(bot)
+BotStateResponse::BotStateResponse(Bot *bot, int id, const QString& from, const QString& to)
+    : Message(id, from, to), _bot(bot)
 {}
 
 BotStateResponse::BotStateResponse(const BotStateResponse& botStateResponse) : Message(botStateResponse)

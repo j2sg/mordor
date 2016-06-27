@@ -9,7 +9,7 @@ class Bot;
 class BotStateResponse : public Message
 {
 public:
-    BotStateResponse(Bot *bot = 0, int id = NO_MSG_ID, const QString& from = "");
+    BotStateResponse(Bot *bot = 0, int id = NO_MSG_ID, const QString& from = "", const QString& to = "");
     BotStateResponse(const BotStateResponse& botStateResponse);
     ~BotStateResponse();
     BotStateResponse& operator=(const BotStateResponse& botStateResponse);

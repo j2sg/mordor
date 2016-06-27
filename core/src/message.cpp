@@ -5,7 +5,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-Message::Message(int id, const QString& from) : _id(id), _from(from)
+Message::Message(int id, const QString& from, const QString& to) : _id(id), _from(from), _to(to)
 {}
 
 void Message::setId(int id)
@@ -28,12 +28,22 @@ const QString& Message::from() const
     return _from;
 }
 
+void Message::setTo(const QString& to)
+{
+    _to = to;
+}
+
+const QString& Message::to() const
+{
+    return _to;
+}
+
 Message *Message::createFromJson(const QString& json)
 {
     QJsonDocument document = QJsonDocument::fromJson(json.toUtf8());
     QJsonObject object = document.object();
 
-    Message *message = Message::createFromType(object["type"].toString());
+    Message *message = Message::getInstanceOf(object["type"].toString());
 
     if(message)
         message -> fromJson(json);
@@ -41,7 +51,7 @@ Message *Message::createFromJson(const QString& json)
     return message;
 }
 
-Message *Message::createFromType(const QString& type)
+Message *Message::getInstanceOf(const QString& type)
 {
     if(type == "GET_STATUS_CMD")
         return new GetStatusCommand;

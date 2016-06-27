@@ -8,20 +8,23 @@
 class Message
 {
 public:
-    Message(int id, const QString& from);
+    Message(int id, const QString& from, const QString& to);
     virtual ~Message() {}
     void setId(int id);
     int id() const;
     void setFrom(const QString& from);
     const QString& from() const;
+    void setTo(const QString& to);
+    const QString& to() const;
     static Message *createFromJson(const QString& json);
     virtual void fromJson(const QString& json) = 0;
     virtual QString toJson() const = 0;
 protected:
     int _id;
     QString _from;
+    QString _to;
 private:
-    static Message *createFromType(const QString& type);
+    static Message *getInstanceOf(const QString& type);
 };
 
 #endif // MESSAGE_H

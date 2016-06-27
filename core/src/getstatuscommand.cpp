@@ -2,7 +2,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-GetStatusCommand::GetStatusCommand(int id, const QString& from) : Message(id, from)
+GetStatusCommand::GetStatusCommand(int id, const QString& from, const QString& to) : Message(id, from, to)
 {}
 
 void GetStatusCommand::fromJson(const QString& json)
