@@ -2,7 +2,7 @@
 #include "bot.h"
 #include <QColor>
 
-BotnetModel::BotnetModel(QList<Bot *> *bots, QObject *parent)
+BotnetModel::BotnetModel(QMap<QString, Bot *> *bots, QObject *parent)
     : QAbstractTableModel(parent), _bots(bots) {}
 
 BotnetModel::~BotnetModel()
@@ -15,7 +15,7 @@ BotnetModel::~BotnetModel()
     }
 }
 
-void BotnetModel::setBots(QList<Bot *> *bots)
+void BotnetModel::setBots(QMap<QString, Bot *> *bots)
 {
     beginResetModel();
 
@@ -31,28 +31,28 @@ void BotnetModel::setBots(QList<Bot *> *bots)
     endResetModel();
 }
 
-QList<Bot *> *BotnetModel::bots()
+QMap<QString, Bot *> *BotnetModel::bots()
 {
     return _bots;
 }
 
-bool BotnetModel::insertBot(int k, Bot *bot)
+bool BotnetModel::insertBot(Bot *bot)
 {
-    if(k < 0  || k > _bots -> size())
+    if(_bots -> contains(bot -> id()))
         return false;
 
     beginResetModel();
 
-    _bots -> insert(k, bot);
+    _bots -> insert(bot -> id(), bot);
 
     endResetModel();
 
     return true;
 }
 
-bool BotnetModel::modifyBot(int k)
+bool BotnetModel::modifyBot(const QString& id)
 {
-    if(k < 0  || k > _bots -> size())
+    if(!_bots -> contains(id))
         return false;
 
     beginResetModel();
@@ -61,15 +61,15 @@ bool BotnetModel::modifyBot(int k)
     return true;
 }
 
-bool BotnetModel::removeBot(int k)
+bool BotnetModel::removeBot(const QString& id)
 {
-    if(k < 0  || k > _bots -> size())
+    if(!_bots -> contains(id))
         return false;
 
     beginResetModel();
 
-    delete _bots -> at(k);
-    _bots -> removeAt(k);
+    delete _bots -> value(id);
+    _bots -> remove(id);
 
     endResetModel();
 
@@ -102,7 +102,7 @@ QVariant BotnetModel::data(const QModelIndex& index, int role) const
                 return int(Qt::AlignLeft | Qt::AlignVCenter);
             }
         } else if(role == Qt::DisplayRole) {
-            Bot *bot = _bots -> at(index.row());
+            Bot *bot = _bots -> value(botAt(index.row()));
 
             switch(index.column()) {
             case ColumnBotId:
@@ -115,7 +115,7 @@ QVariant BotnetModel::data(const QModelIndex& index, int role) const
                 return bot -> state() == WaitingForCommand ? tr("Esperando") : tr("Ataque");
             }
         } else if(role == Qt::ForegroundRole) {
-            Bot *bot = _bots -> at(index.row());
+            Bot *bot = _bots -> value(botAt(index.row()));
 
             return bot -> state() != Attack ? QColor(Qt::black) : QColor(Qt::red);
         }
@@ -142,4 +142,9 @@ QVariant BotnetModel::headerData(int section, Qt::Orientation orientation, int r
     }
 
     return QVariant();
+}
+
+QString BotnetModel::botAt(int offset) const
+{
+    return (_bots -> begin() + offset).key();
 }
