@@ -101,6 +101,7 @@ void MainWindow::responseReceivedOnXmppClient(Message *response)
         qDebug() << "IP:" << botStateResponse -> bot() -> ip();
         qDebug() << "OS:" << botStateResponse -> bot() -> os();
         qDebug() << "State:" << static_cast<int>(botStateResponse -> bot() -> state());
+        _centralWidget -> addBot(new Bot(*botStateResponse -> bot()));
     }
 }
 

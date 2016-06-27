@@ -7,6 +7,7 @@ class QTableView;
 class QTabWidget;
 class QTextEdit;
 class BotnetModel;
+class Bot;
 
 class CentralWidget : public QWidget
 {
@@ -14,6 +15,9 @@ class CentralWidget : public QWidget
 public:
     CentralWidget(QWidget *parent = 0);
     ~CentralWidget();
+public slots:
+    void addBot(Bot *bot);
+    void removeBot(const QString& id);
 private:
     void createWidgets();
     void createConnections();

@@ -1,5 +1,6 @@
 #include "centralwidget.h"
 #include "botnetmodel.h"
+#include "bot.h"
 #include <QTableView>
 #include <QTabWidget>
 #include <QTextEdit>
@@ -16,10 +17,28 @@ CentralWidget::~CentralWidget()
     delete _botnetModel;
 }
 
+void CentralWidget::addBot(Bot *bot)
+{
+    if(!_botnetModel -> bots() -> contains(bot -> id()))
+        _botnetModel -> insertBot(bot);
+    else {
+        Bot *botOnModel = _botnetModel -> bots() -> value(bot -> id());
+
+        *botOnModel = *bot;
+
+        _botnetModel -> modifyBot(bot -> id());
+    }
+}
+
+void CentralWidget::removeBot(const QString& id)
+{
+    _botnetModel -> removeBot(id);
+}
+
 void CentralWidget::createWidgets()
 {
     _botnetTableView = new QTableView;
-    _botnetModel = new BotnetModel(new QList<Bot *>());
+    _botnetModel = new BotnetModel(new QMap<QString, Bot *>());
     _botnetTableView -> setModel(_botnetModel);
 
     _tabWidget = new QTabWidget;
