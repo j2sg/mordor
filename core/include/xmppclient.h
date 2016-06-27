@@ -20,6 +20,7 @@ signals:
     void ready();
     void commandReceived(Message *command);
     void responseReceived(Message *response);
+    void badMessageReceived(const QString& message);
     void botAdded(const QString &jid);
     void botRemoved(const QString &jid);
 public slots:

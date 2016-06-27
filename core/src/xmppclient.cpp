@@ -51,12 +51,17 @@ void XmppClient::messageReceivedOnRoom(const QXmppMessage& xmppMessage)
     if(xmppMessage.type() == QXmppMessage::GroupChat) {
         if(xmppMessage.stamp().isNull()) {
             Message *message = Message::createFromJson(xmppMessage.body());
-            message -> setFrom(xmppMessage.from());
 
-            if(dynamic_cast<GetStatusCommand *>(message))
-                emit commandReceived(message);
-            else if(dynamic_cast<BotStateResponse *>(message))
-                emit responseReceived(message);
+            if(!message) {
+                emit badMessageReceived(xmppMessage.body());
+            } else {
+                message -> setFrom(xmppMessage.from());
+
+                if(dynamic_cast<GetStatusCommand *>(message))
+                    emit commandReceived(message);
+                else if(dynamic_cast<BotStateResponse *>(message))
+                    emit responseReceived(message);
+            }
         }
     }
 }
