@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createWidgets();
     createConnections();
     setWindowTitle(APPLICATION_NAME);
-    //setWindowIcon(QIcon(""));
+    setWindowIcon(QIcon(":images/sauron.png"));
     setConnected(false);
 }
 

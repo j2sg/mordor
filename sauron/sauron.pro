@@ -28,3 +28,6 @@ SOURCES += src/main.cpp \
 
 LIBS += -L../core -lcore -lqxmpp
 
+RESOURCES += \
+    resources/sauron.qrc
+

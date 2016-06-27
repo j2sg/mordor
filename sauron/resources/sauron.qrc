@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/sauron.png</file>
+    </qresource>
+</RCC>
