@@ -1,61 +1,82 @@
 #include "botstateresponse.h"
+#include "bot.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 
-BotStateResponse::BotStateResponse(int id, const QString& from, const QString &ip, const QString &os, BotState state)
-    : Message(id, from), _ip(ip), _os(os), _state(state)
+BotStateResponse::BotStateResponse(Bot *bot, int id, const QString& from)
+    : Message(id, from), _bot(bot)
 {}
 
-void BotStateResponse::setIp(const QString& ip)
+BotStateResponse::BotStateResponse(const BotStateResponse& botStateResponse) : Message(botStateResponse)
 {
-    _ip = ip;
+    *this = botStateResponse;
 }
 
-const QString& BotStateResponse::ip() const
+BotStateResponse::~BotStateResponse()
 {
-    return _ip;
+    if(_bot)
+        delete _bot;
 }
 
-void BotStateResponse::setOs(const QString& os)
+BotStateResponse& BotStateResponse::operator=(const BotStateResponse& botStateResponse)
 {
-    _os = os;
+    Message::operator=(botStateResponse);
+
+    if(_bot)
+        delete _bot;
+
+    _bot = botStateResponse._bot ? new Bot(*botStateResponse._bot) : 0;
+
+    return *this;
 }
 
-const QString& BotStateResponse::os() const
+void BotStateResponse::setBot(Bot *bot)
 {
-    return _os;
+    if(_bot)
+        delete _bot;
+
+    _bot = bot;
 }
 
-void BotStateResponse::setState(BotState state)
+const Bot *BotStateResponse::bot() const
 {
-    _state = state;
-}
-
-BotState BotStateResponse::state() const
-{
-    return _state;
+    return _bot;
 }
 
 void BotStateResponse::fromJson(const QString& json)
 {
     QJsonDocument document = QJsonDocument::fromJson(json.toUtf8());
-    QJsonObject object = document.object();
+    QJsonObject documentObject = document.object();
 
-    _id = object["id"].toInt();
-    _ip = object["ip"].toString();
-    _os = object["os"].toString();
-    _state = static_cast<BotState>(object["state"].toInt());
+    _id = documentObject["id"].toInt();
+
+    QJsonObject botObject = documentObject["bot"].toObject();
+
+    QString botId = botObject["id"].toString();
+    QString botIp = botObject["ip"].toString();
+    QString botOs = botObject["os"].toString();
+    BotState botState = static_cast<BotState>(botObject["state"].toInt());
+    int botAttackId = botObject["attack"].toInt();
+
+    _bot = new Bot(botId, botIp, botOs, botState, botAttackId);
 }
 
 QString BotStateResponse::toJson() const
 {
-    QJsonObject object;
+    QJsonObject documentObject;
 
-    object["id"] = _id;
-    object["type"] = "BOT_STATE_RES";
-    object["ip"] = _ip;
-    object["os"] = _os;
-    object["state"] = static_cast<int>(_state);
+    documentObject["id"] = _id;
+    documentObject["type"] = "BOT_STATE_RES";
 
-    return QJsonDocument(object).toJson(QJsonDocument::Compact);
+    QJsonObject botObject;
+
+    botObject["id"] = _bot -> id();
+    botObject["ip"] = _bot -> ip();
+    botObject["os"] = _bot -> os();
+    botObject["state"] = static_cast<int>(_bot -> state());
+    botObject["attack"] = _bot -> attackId();
+
+    documentObject["bot"] = botObject;
+
+    return QJsonDocument(documentObject).toJson(QJsonDocument::Compact);
 }

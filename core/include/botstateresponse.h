@@ -4,22 +4,21 @@
 #include "message.h"
 #include "types.h"
 
+class Bot;
+
 class BotStateResponse : public Message
 {
 public:
-    BotStateResponse(int id = NO_MSG_ID, const QString& from = "", const QString& ip = "", const QString& os = "", BotState state = UndefinedState);
-    void setIp(const QString& ip);
-    const QString& ip() const;
-    void setOs(const QString& os);
-    const QString& os() const;
-    void setState(BotState state);
-    BotState state() const;
+    BotStateResponse(Bot *bot = 0, int id = NO_MSG_ID, const QString& from = "");
+    BotStateResponse(const BotStateResponse& botStateResponse);
+    ~BotStateResponse();
+    BotStateResponse& operator=(const BotStateResponse& botStateResponse);
+    void setBot(Bot *bot);
+    const Bot *bot() const;
     void fromJson(const QString& json);
     QString toJson() const;
 protected:
-    QString _ip;
-    QString _os;
-    BotState _state;
+    Bot *_bot;
 };
 
 #endif // BOTSTATERESPONSE_H
