@@ -24,7 +24,7 @@ private slots:
     void about();
     void readyOnXmppClient();
     void disconnectedOnXmppClient();
-    void responseReceivedOnXmppClient(const Message& response);
+    void responseReceivedOnXmppClient(Message *response);
 private:
     void createWidgets();
     void createCentralWidget();

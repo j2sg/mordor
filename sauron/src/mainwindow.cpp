@@ -5,6 +5,7 @@
 #include "xmppclient.h"
 #include "getstatuscommand.h"
 #include "botstateresponse.h"
+#include "bot.h"
 #include <QAction>
 #include <QMenu>
 #include <QMenuBar>
@@ -91,9 +92,16 @@ void MainWindow::disconnectedOnXmppClient()
     setConnected(false);
 }
 
-void MainWindow::responseReceivedOnXmppClient(const Message& response)
+void MainWindow::responseReceivedOnXmppClient(Message *response)
 {
-    qDebug() << "Response received from" << response.from();
+    qDebug() << "Response received from" << response -> from();
+
+    if(BotStateResponse *botStateResponse = dynamic_cast<BotStateResponse *>(response)) {
+        qDebug() << "ID:" << botStateResponse -> bot() -> id();
+        qDebug() << "IP:" << botStateResponse -> bot() -> ip();
+        qDebug() << "OS:" << botStateResponse -> bot() -> os();
+        qDebug() << "State:" << static_cast<int>(botStateResponse -> bot() -> state());
+    }
 }
 
 void MainWindow::createWidgets()
@@ -174,8 +182,8 @@ void MainWindow::createConnections()
             this, SLOT(readyOnXmppClient()));
     connect(_xmppClient, SIGNAL(disconnected()),
             this, SLOT(disconnectedOnXmppClient()));
-    connect(_xmppClient, SIGNAL(responseReceived(const Message&)),
-            this, SLOT(responseReceivedOnXmppClient(const Message&)));
+    connect(_xmppClient, SIGNAL(responseReceived(Message *)),
+            this, SLOT(responseReceivedOnXmppClient(Message *)));
 }
 
 void MainWindow::setConnected(bool connected)
