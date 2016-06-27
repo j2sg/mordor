@@ -4,6 +4,7 @@
 #include "connectdialog.h"
 #include "xmppclient.h"
 #include "getstatuscommand.h"
+#include "getbotstatecommand.h"
 #include "botstateresponse.h"
 #include "bot.h"
 #include <QAction>
@@ -103,6 +104,16 @@ void MainWindow::responseReceivedOnXmppClient(Message *response)
     delete response;
 }
 
+void MainWindow::botAddedOnXmppClient(const QString &jid)
+{
+    qDebug() << "Bot added:" << jid;
+}
+
+void MainWindow::botRemovedOnXmppClient(const QString &jid)
+{
+    qDebug() << "Bot removed:" << jid;
+}
+
 void MainWindow::createWidgets()
 {
     createCentralWidget();
@@ -183,6 +194,10 @@ void MainWindow::createConnections()
             this, SLOT(disconnectedOnXmppClient()));
     connect(_xmppClient, SIGNAL(responseReceived(Message *)),
             this, SLOT(responseReceivedOnXmppClient(Message *)));
+    connect(_xmppClient, SIGNAL(botAdded(const QString&)),
+            this, SLOT(botAddedOnXmppClient(const QString&)));
+    connect(_xmppClient, SIGNAL(botRemoved(const QString&)),
+            this, SLOT(botRemovedOnXmppClient(const QString&)));
 }
 
 void MainWindow::setConnected(bool connected)
