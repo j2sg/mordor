@@ -14,13 +14,14 @@ public:
     int id() const;
     void setFrom(const QString& from);
     const QString& from() const;
-    static Message *createFromType(const QString& type);
     static Message *createFromJson(const QString& json);
     virtual void fromJson(const QString& json) = 0;
     virtual QString toJson() const = 0;
 protected:
     int _id;
     QString _from;
+private:
+    static Message *createFromType(const QString& type);
 };
 
 #endif // MESSAGE_H

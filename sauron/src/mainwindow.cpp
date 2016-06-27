@@ -79,11 +79,7 @@ void MainWindow::readyOnXmppClient()
 
     setConnected(true);
 
-    Message *message = Message::createFromType("GET_STATUS_CMD");
-
-    _xmppClient -> sendCommand(*message);
-
-    delete message;
+    _xmppClient -> sendCommand(GetStatusCommand());
 }
 
 void MainWindow::disconnectedOnXmppClient()

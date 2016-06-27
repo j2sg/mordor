@@ -28,18 +28,6 @@ const QString& Message::from() const
     return _from;
 }
 
-Message *Message::createFromType(const QString& type)
-{
-    if(type == "GET_STATUS_CMD")
-        return new GetStatusCommand;
-    else if(type == "GET_BOT_STATE_CMD")
-        return new GetBotStateCommand;
-    else if(type == "BOT_STATE_RES")
-        return new BotStateResponse;
-
-    return 0;
-}
-
 Message *Message::createFromJson(const QString& json)
 {
     QJsonDocument document = QJsonDocument::fromJson(json.toUtf8());
@@ -51,4 +39,16 @@ Message *Message::createFromJson(const QString& json)
         message -> fromJson(json);
 
     return message;
+}
+
+Message *Message::createFromType(const QString& type)
+{
+    if(type == "GET_STATUS_CMD")
+        return new GetStatusCommand;
+    else if(type == "GET_BOT_STATE_CMD")
+        return new GetBotStateCommand;
+    else if(type == "BOT_STATE_RES")
+        return new BotStateResponse;
+
+    return 0;
 }
