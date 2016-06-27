@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 
     BotManager *manager = BotManager::instance();
 
-    manager -> start();
+    QObject::connect(manager, SIGNAL(ready()), manager, SLOT(connectToCC()));
 
     return app.exec();
 }

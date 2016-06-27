@@ -53,7 +53,7 @@ void cleanup()
 {
     BotManager *manager = BotManager::instance();
 
-    manager -> stop();
+    manager -> disconnectFromCC();
 
     QCoreApplication::quit();
 }
