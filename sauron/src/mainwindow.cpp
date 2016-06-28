@@ -71,7 +71,7 @@ void MainWindow::startAttack()
     if(ok && !target.isEmpty()) {
         setAttackInProgress(true, Attack(_attack.id() + 1, target));
 
-        _centralWidget -> writeEvent(QString("Modo Ataque++"));
+        _centralWidget -> writeEvent(QString("Modo Ataque++ Target: %1").arg(target));
 
         _xmppClient -> sendCommand(StartAttackCommand(_attack.target(), _attack.id()));
 
@@ -149,7 +149,7 @@ void MainWindow::responseReceivedOnXmppClient(Message *response)
         } else if(!_attackInProgress && bot -> state() == AttackInProgress) {
             setAttackInProgress(true, bot -> attack());
 
-            _centralWidget -> writeEvent(QString("Modo Ataque++ (Ataque en progreso en %1)").arg(botStateResponse -> from()));
+            _centralWidget -> writeEvent(QString("Modo Ataque++ Ataque en progreso en %1 sobre %2").arg(botStateResponse -> from()).arg(bot -> attack().target()));
 
             _xmppClient -> sendCommand(StartAttackCommand(_attack.target(), _attack.id()));
 
@@ -220,7 +220,7 @@ void MainWindow::createActions()
     _connectToCCAction -> setIcon(QIcon(":images/connect.png"));
     _connectToCCAction -> setStatusTip(tr("Establecer conexion con el CC de la Botnet"));
 
-    _disconnectFromCCAction = new QAction(tr("&Desconectar del CC"), this);
+    _disconnectFromCCAction = new QAction(tr("&Desconectar de CC"), this);
     _disconnectFromCCAction -> setIcon(QIcon(":images/disconnect.png"));
     _disconnectFromCCAction -> setStatusTip(tr("Cerrar conexion con el CC"));
 
@@ -259,10 +259,12 @@ void MainWindow::createMenus()
 void MainWindow::createToolBar()
 {
     _applicationToolBar = addToolBar(tr("Aplicacion"));
+    _applicationToolBar -> setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     _applicationToolBar -> addAction(_connectToCCAction);
     _applicationToolBar -> addAction(_disconnectFromCCAction);
 
     _attackToolBar = addToolBar(tr("Ataque"));
+    _attackToolBar -> setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     _attackToolBar -> addAction(_startAttackAction);
     _attackToolBar -> addAction(_stopAttackAction);
 }
