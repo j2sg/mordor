@@ -3,6 +3,12 @@
 
 #include <QWidget>
 
+#define COLUMN_BOTNET_ID_WIDTH 200
+#define COLUMN_BOTNET_IP_WIDTH 150
+#define COLUMN_BOTNET_OS_WIDTH 200
+#define COLUMN_BOTNET_IP_STATE 100
+#define EVENTS_HEIGHT 150
+
 class QTableView;
 class QTextEdit;
 class BotnetModel;

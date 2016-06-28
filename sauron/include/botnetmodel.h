@@ -14,13 +14,6 @@ typedef enum ColumnBotEnum
     ColumnBotCount
 } ColumnBot;
 
-typedef enum ColumnAttackEnum
-{
-    ColumnAttackId,
-    ColumnAttackUptime,
-    ColumnAttackBots
-} ColumnAttack;
-
 class Bot;
 
 class BotnetModel : public QAbstractTableModel

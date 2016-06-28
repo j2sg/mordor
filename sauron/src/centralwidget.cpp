@@ -2,6 +2,7 @@
 #include "botnetmodel.h"
 #include "bot.h"
 #include <QTableView>
+#include <QHeaderView>
 #include <QTextEdit>
 #include <QVBoxLayout>
 
@@ -41,8 +42,19 @@ void CentralWidget::createWidgets()
     _botnetTableView = new QTableView;
     _botnetModel = new BotnetModel(new QMap<QString, Bot *>());
     _botnetTableView -> setModel(_botnetModel);
+    _botnetTableView -> setAlternatingRowColors(true);
+    _botnetTableView -> setShowGrid(false);
+    _botnetTableView -> setSelectionMode(QAbstractItemView::NoSelection);
+    _botnetTableView -> setFocusPolicy(Qt::NoFocus);
+    _botnetTableView -> setColumnWidth(ColumnBotId, COLUMN_BOTNET_ID_WIDTH);
+    _botnetTableView -> setColumnWidth(ColumnBotIP, COLUMN_BOTNET_IP_WIDTH);
+    _botnetTableView -> setColumnWidth(ColumnBotOS, COLUMN_BOTNET_OS_WIDTH);
+    _botnetTableView -> setColumnWidth(ColumnBotStatus, COLUMN_BOTNET_IP_STATE);
+    _botnetTableView -> horizontalHeader() -> setSectionResizeMode(QHeaderView::Fixed);
+    _botnetTableView -> horizontalHeader() -> setSectionResizeMode(ColumnBotOS, QHeaderView::Stretch);
 
     _eventsTextEdit = new QTextEdit;
+    _eventsTextEdit -> setFixedHeight(EVENTS_HEIGHT);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
 
