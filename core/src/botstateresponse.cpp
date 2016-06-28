@@ -56,9 +56,15 @@ void BotStateResponse::fromJson(const QString& json)
     QString botIp = botObject["ip"].toString();
     QString botOs = botObject["os"].toString();
     BotState botState = static_cast<BotState>(botObject["state"].toInt());
-    int botAttackId = botObject["attack"].toInt();
 
-    _bot = new Bot(botId, botIp, botOs, botState, botAttackId);
+    QJsonObject attackObject = botObject["attack"].toObject();
+
+    int attackId = attackObject["id"].toInt();
+    QString attackTarget = botObject["target"].toString();
+
+    Attack botAttack(attackId, attackTarget);
+
+    _bot = new Bot(botId, botIp, botOs, botState, botAttack);
 }
 
 QString BotStateResponse::toJson() const
@@ -74,7 +80,13 @@ QString BotStateResponse::toJson() const
     botObject["ip"] = _bot -> ip();
     botObject["os"] = _bot -> os();
     botObject["state"] = static_cast<int>(_bot -> state());
-    botObject["attack"] = _bot -> attackId();
+
+    QJsonObject attackObject;
+
+    attackObject["id"] = _bot -> attack().id();
+    attackObject["target"] = _bot->attack().target();
+
+    botObject["attack"] = attackObject;
 
     documentObject["bot"] = botObject;
 
