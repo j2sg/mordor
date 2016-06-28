@@ -22,14 +22,16 @@ HEADERS += \
     include/message.h \
     include/getbotstatecommand.h \
     include/core_global.h \
-    include/startattackcommand.h
+    include/startattackcommand.h \
+    include/attackstartedresponse.h
 
 SOURCES += src/bot.cpp src/xmppclient.cpp \
     src/getstatuscommand.cpp \
     src/botstateresponse.cpp \
     src/message.cpp \
     src/getbotstatecommand.cpp \
-    src/startattackcommand.cpp
+    src/startattackcommand.cpp \
+    src/attackstartedresponse.cpp
 
 LIBS += -lqxmpp
 
