@@ -32,7 +32,6 @@ public slots:
     void sendResponse(const Message& response);
 private slots:
     void connectedOnXmppClient();
-    void errorOnXmppClient(QXmppClient::Error error);
     void messageReceivedOnRoom(const QXmppMessage& xmppMessage);
 private:
     void joinRoom();

@@ -8,7 +8,6 @@
 #include "attackstoppedresponse.h"
 #include <qxmpp/QXmppMucManager.h>
 #include <qxmpp/QXmppMessage.h>
-#include <QDebug>
 
 XmppClient::XmppClient(const QString& resource, const QString& roomName, const QString& muc, QObject *parent)
     : QXmppClient(parent), _resource(resource), _roomName(roomName), _muc(muc)
@@ -57,14 +56,7 @@ void XmppClient::sendResponse(const Message& response)
 
 void XmppClient::connectedOnXmppClient()
 {
-    qDebug() << "Connected to server" << configuration().domain();
-
     joinRoom();
-}
-
-void XmppClient::errorOnXmppClient(QXmppClient::Error error)
-{
-    qDebug() << "Error on client:" << error;
 }
 
 void XmppClient::messageReceivedOnRoom(const QXmppMessage& xmppMessage)
@@ -119,8 +111,6 @@ void XmppClient::createConnections()
 {
     connect(this, SIGNAL(connected()),
             this, SLOT(connectedOnXmppClient()));
-    connect(this, SIGNAL(error(QXmppClient::Error)),
-            this, SLOT(errorOnXmppClient(QXmppClient::Error)));
 }
 
 void XmppClient::createRoomConnections()
