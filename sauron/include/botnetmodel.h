@@ -30,9 +30,9 @@ public:
     ~BotnetModel();
     void setBots(QMap<QString, Bot *> *bots);
     QMap<QString, Bot *> *bots();
-    bool insertBot(Bot *bot);
-    bool modifyBot(const QString& id);
-    bool removeBot(const QString& id);
+    bool insertBot(const QString& roomId, Bot *bot);
+    bool modifyBot(const QString& roomId);
+    bool removeBot(const QString& roomId);
     int rowCount(const QModelIndex& parent) const;
     int columnCount(const QModelIndex& parent) const;
     QVariant data(const QModelIndex& index, int role) const;

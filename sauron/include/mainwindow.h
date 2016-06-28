@@ -25,8 +25,8 @@ private slots:
     void readyOnXmppClient();
     void disconnectedOnXmppClient();
     void responseReceivedOnXmppClient(Message *response);
-    void botAddedOnXmppClient(const QString &jid);
-    void botRemovedOnXmppClient(const QString &jid);
+    void botAddedOnXmppClient(const QString &roomId);
+    void botRemovedOnXmppClient(const QString &roomId);
 private:
     void createWidgets();
     void createCentralWidget();

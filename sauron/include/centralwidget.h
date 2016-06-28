@@ -16,8 +16,8 @@ public:
     CentralWidget(QWidget *parent = 0);
     ~CentralWidget();
 public slots:
-    void addBot(Bot *bot);
-    void removeBot(const QString& id);
+    void addBot(const QString& roomId, Bot *bot);
+    void removeBot(const QString& roomId);
 private:
     void createWidgets();
     void createConnections();

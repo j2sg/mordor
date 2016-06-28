@@ -36,23 +36,23 @@ QMap<QString, Bot *> *BotnetModel::bots()
     return _bots;
 }
 
-bool BotnetModel::insertBot(Bot *bot)
+bool BotnetModel::insertBot(const QString& roomId, Bot *bot)
 {
-    if(_bots -> contains(bot -> id()))
+    if(_bots -> contains(roomId))
         return false;
 
     beginResetModel();
 
-    _bots -> insert(bot -> id(), bot);
+    _bots -> insert(roomId, bot);
 
     endResetModel();
 
     return true;
 }
 
-bool BotnetModel::modifyBot(const QString& id)
+bool BotnetModel::modifyBot(const QString& roomId)
 {
-    if(!_bots -> contains(id))
+    if(!_bots -> contains(roomId))
         return false;
 
     beginResetModel();
@@ -61,15 +61,15 @@ bool BotnetModel::modifyBot(const QString& id)
     return true;
 }
 
-bool BotnetModel::removeBot(const QString& id)
+bool BotnetModel::removeBot(const QString& roomId)
 {
-    if(!_bots -> contains(id))
+    if(!_bots -> contains(roomId))
         return false;
 
     beginResetModel();
 
-    delete _bots -> value(id);
-    _bots -> remove(id);
+    delete _bots -> value(roomId);
+    _bots -> remove(roomId);
 
     endResetModel();
 
