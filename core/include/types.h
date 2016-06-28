@@ -8,7 +8,7 @@ typedef enum BotStateEnum
     UndefinedState,
     WaitingForCC,
     WaitingForCommand,
-    Attack
+    AttackInProgress
 } BotState;
 
 #endif // TYPES_H

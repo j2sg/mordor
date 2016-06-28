@@ -1,7 +1,11 @@
 #include "xmppclient.h"
 #include "getstatuscommand.h"
 #include "getbotstatecommand.h"
+#include "startattackcommand.h"
+#include "stopattackcommand.h"
 #include "botstateresponse.h"
+#include "attackstartedresponse.h"
+#include "attackstoppedresponse.h"
 #include <qxmpp/QXmppMucManager.h>
 #include <qxmpp/QXmppMessage.h>
 #include <QDebug>
@@ -76,9 +80,13 @@ void XmppClient::messageReceivedOnRoom(const QXmppMessage& xmppMessage)
                 message -> setFrom(xmppMessage.from());
 
                 if(dynamic_cast<GetStatusCommand *>(message) ||
-                   dynamic_cast<GetBotStateCommand *>(message))
+                   dynamic_cast<GetBotStateCommand *>(message) ||
+                   dynamic_cast<StartAttackCommand *>(message) ||
+                   dynamic_cast<StopAttackCommand *>(message))
                     emit commandReceived(message);
-                else if(dynamic_cast<BotStateResponse *>(message))
+                else if(dynamic_cast<BotStateResponse *>(message) ||
+                        dynamic_cast<AttackStartedResponse *>(message) ||
+                        dynamic_cast<AttackStoppedResponse *>(message))
                     emit responseReceived(message);
             }
         }
