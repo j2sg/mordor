@@ -55,6 +55,7 @@ private:
     QToolBar *_applicationToolBar;
     QToolBar *_attackToolBar;
     QLabel *_ccLabel;
+    QLabel *_modeLabel;
 
     XmppClient *_xmppClient;
     bool _connected;

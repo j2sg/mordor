@@ -271,7 +271,12 @@ void MainWindow::createStatusBar()
 {
     _ccLabel = new QLabel;
 
+    _modeLabel = new QLabel(tr("Modo:       "));
+    _modeLabel -> setMinimumSize(_modeLabel -> sizeHint());
+    _modeLabel -> setAlignment(Qt::AlignRight);
+
     statusBar() -> addWidget(_ccLabel);
+    statusBar() -> addWidget(_modeLabel, 1);
 }
 
 void MainWindow::createConnections()
@@ -320,6 +325,7 @@ void MainWindow::setAttackInProgress(bool attackInProgress, const Attack& attack
 
     _startAttackAction -> setEnabled(_connected && !_attackInProgress);
     _stopAttackAction -> setEnabled(_connected && _attackInProgress);
+    _modeLabel -> setText(tr("Modo: %1").arg(_connected ? (attackInProgress ? tr("ataque") : tr("espera")) : "      "));
 }
 
 bool MainWindow::verifyExit()
