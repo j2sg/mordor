@@ -217,27 +217,27 @@ void MainWindow::createCentralWidget()
 void MainWindow::createActions()
 {
     _connectToCCAction = new QAction(tr("&Conectar a CC..."), this);
-    //_connectToCCAction->setIcon(QIcon(""));
+    _connectToCCAction -> setIcon(QIcon(":images/connect.png"));
     _connectToCCAction -> setStatusTip(tr("Establecer conexion con el CC de la Botnet"));
 
     _disconnectFromCCAction = new QAction(tr("&Desconectar del CC"), this);
-    //_disconnectFromCCAction->setIcon(QIcon(""));
+    _disconnectFromCCAction -> setIcon(QIcon(":images/disconnect.png"));
     _disconnectFromCCAction -> setStatusTip(tr("Cerrar conexion con el CC"));
 
     _exitAction = new QAction(tr("&Salir"), this);
-    //_exitAction->setIcon(QIcon(""));
+    _exitAction -> setIcon(QIcon(":images/exit.png"));
     _exitAction -> setStatusTip(tr("Salir de la aplicacion"));
 
     _startAttackAction = new QAction(tr("&Iniciar..."), this);
-    //_startAttackAction->setIcon(QIcon(""));
+    _startAttackAction -> setIcon(QIcon(":images/start.png"));
     _startAttackAction -> setStatusTip(tr("Iniciar ataque DDoS sobre un host objetivo"));
 
     _stopAttackAction = new QAction(tr("&Parar"), this);
-    //_stopAttackAction->setIcon(QIcon(""));
+    _stopAttackAction -> setIcon(QIcon(":images/stop.png"));
     _stopAttackAction -> setStatusTip(tr("Parar ataque DDoS en marcha"));
 
     _aboutAction = new QAction(tr("Acerca de"), this);
-    //_aboutAction->setIcon(QIcon(""));
+    _aboutAction -> setIcon(QIcon(":images/about.png"));
     _aboutAction -> setStatusTip(tr("Muestra informacion acerca de la aplicacion"));
 }
 
