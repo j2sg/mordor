@@ -4,6 +4,7 @@
 #include "bot.h"
 #include "storagemanager.h"
 #include "getstatuscommand.h"
+#include "getbotstatecommand.h"
 #include "botstateresponse.h"
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -38,9 +39,11 @@ void BotManager::commandReceivedOnBot(Message *command)
 {
     qDebug() << "Command received from" << command -> from();
 
-    if(dynamic_cast<GetStatusCommand *>(command)) {
+    if(dynamic_cast<GetStatusCommand *>(command) ||
+       dynamic_cast<GetBotStateCommand *>(command)) {
         BotStateResponse *response = new BotStateResponse;
 
+        response -> setTo(command -> from());
         response -> setBot(_bot);
 
         _xmppClient -> sendResponse(*response);
