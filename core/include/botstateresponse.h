@@ -1,12 +1,13 @@
 #ifndef BOTSTATERESPONSE_H
 #define BOTSTATERESPONSE_H
 
+#include "core_global.h"
 #include "message.h"
 #include "types.h"
 
 class Bot;
 
-class BotStateResponse : public Message
+class CORE_EXPORT BotStateResponse : public Message
 {
 public:
     BotStateResponse(Bot *bot = 0, int id = NO_MSG_ID, const QString& from = "", const QString& to = "");

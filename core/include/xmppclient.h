@@ -1,6 +1,7 @@
 #ifndef XMPPCLIENT_H
 #define XMPPCLIENT_H
 
+#include "core_global.h"
 #include <qxmpp/QXmppClient.h>
 
 #define DEFAULT_ROOM_NAME "m0rd0r"
@@ -9,7 +10,7 @@
 class QXmppMucRoom;
 class Message;
 
-class XmppClient : public QXmppClient
+class CORE_EXPORT XmppClient : public QXmppClient
 {
     Q_OBJECT
 public:

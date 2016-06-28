@@ -10,7 +10,7 @@ RCC_DIR = build
 
 QT += network xml
 
-DEPENDPATH += . include src
+DEPENDPATH += . include src ../core
 INCLUDEPATH += . include ../core/include
 
 # Input
@@ -23,4 +23,8 @@ HEADERS += \
     include/storagemanager.h \
     include/global.h
 
-LIBS += -L../core -lcore -lqxmpp
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../core/release/ -lcore
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../core/debug/ -lcore
+else:unix: LIBS += -L$$PWD/../core/ -lcore
+
+unix|win32: LIBS += -lqxmpp

@@ -1,11 +1,12 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
+#include "core_global.h"
 #include <QString>
 
 #define NO_MSG_ID -1
 
-class Message
+class CORE_EXPORT Message
 {
 public:
     Message(int id, const QString& from, const QString& to);

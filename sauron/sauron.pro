@@ -10,7 +10,7 @@ RCC_DIR = build
 
 QT += widgets network xml
 
-DEPENDPATH += . include src
+DEPENDPATH += . include src ../core
 INCLUDEPATH += . include ../core/include
 
 HEADERS += \
@@ -26,8 +26,12 @@ SOURCES += src/main.cpp \
     src/centralwidget.cpp \
     src/botnetmodel.cpp
 
-LIBS += -L../core -lcore -lqxmpp
-
 RESOURCES += \
     resources/sauron.qrc
 
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../core/release/ -lcore
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../core/debug/ -lcore
+else:unix: LIBS += -L$$PWD/../core/ -lcore
+
+unix|win32: LIBS += -lqxmpp

@@ -3,7 +3,6 @@
 ######################################################################
 
 TEMPLATE = lib
-CONFIG += staticlib
 OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
@@ -21,7 +20,8 @@ HEADERS += \
     include/getstatuscommand.h \
     include/botstateresponse.h \
     include/message.h \
-    include/getbotstatecommand.h
+    include/getbotstatecommand.h \
+    include/core_global.h
 
 SOURCES += src/bot.cpp src/xmppclient.cpp \
     src/getstatuscommand.cpp \
@@ -30,3 +30,5 @@ SOURCES += src/bot.cpp src/xmppclient.cpp \
     src/getbotstatecommand.cpp
 
 LIBS += -lqxmpp
+
+DEFINES += CORE_LIBRARY

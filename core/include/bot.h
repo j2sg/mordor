@@ -1,10 +1,11 @@
 #ifndef BOT_H
 #define BOT_H
 
+#include "core_global.h"
 #include "types.h"
 #include <QString>
 
-class Bot
+class CORE_EXPORT Bot
 {
 public:
     Bot(const QString& id = "", const QString& ip = "", const QString& os = "",

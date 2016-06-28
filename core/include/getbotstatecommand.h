@@ -1,9 +1,10 @@
 #ifndef GETBOTSTATECOMMAND_H
 #define GETBOTSTATECOMMAND_H
 
+#include "core_global.h"
 #include "message.h"
 
-class GetBotStateCommand : public Message
+class CORE_EXPORT GetBotStateCommand : public Message
 {
 public:
     GetBotStateCommand(int id = NO_MSG_ID, const QString& from = "", const QString& to = "");
