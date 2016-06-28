@@ -4,7 +4,6 @@
 #include <QWidget>
 
 class QTableView;
-class QTabWidget;
 class QTextEdit;
 class BotnetModel;
 class Bot;
@@ -24,8 +23,6 @@ private:
 
     QTableView *_botnetTableView;
     BotnetModel *_botnetModel;
-    QTabWidget *_tabWidget;
-    QTableView *_attacksTableView;
     QTextEdit *_eventsTextEdit;
 };
 
