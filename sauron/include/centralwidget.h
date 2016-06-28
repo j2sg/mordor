@@ -14,8 +14,10 @@ class CentralWidget : public QWidget
 public:
     CentralWidget(QWidget *parent = 0);
     ~CentralWidget();
+    Bot *bot(const QString roomId);
 public slots:
-    void addBot(const QString& roomId, Bot *bot);
+    void insertBot(const QString& roomId, Bot *bot);
+    void modifyBot(const QString& roomId);
     void removeBot(const QString& roomId);
 private:
     void createWidgets();

@@ -16,17 +16,19 @@ CentralWidget::~CentralWidget()
     delete _botnetModel;
 }
 
-void CentralWidget::addBot(const QString& roomId, Bot *bot)
+Bot *CentralWidget::bot(const QString roomId)
 {
-    if(!_botnetModel -> bots() -> contains(roomId))
-        _botnetModel -> insertBot(roomId, bot);
-    else {
-        Bot *botOnModel = _botnetModel -> bots() -> value(roomId);
+    return _botnetModel -> bots() -> value(roomId);
+}
 
-        *botOnModel = *bot;
+void CentralWidget::insertBot(const QString& roomId, Bot *bot)
+{
+    _botnetModel -> insertBot(roomId, bot);
+}
 
-        _botnetModel -> modifyBot(roomId);
-    }
+void CentralWidget::modifyBot(const QString& roomId)
+{
+    _botnetModel -> modifyBot(roomId);
 }
 
 void CentralWidget::removeBot(const QString& roomId)
