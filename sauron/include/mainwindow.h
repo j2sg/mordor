@@ -39,7 +39,7 @@ private:
     void createStatusBar();
     void createConnections();
     void setConnected(bool connected);
-    void setAttackInProgress(bool inProgress, const QString& target = "");
+    void setAttackInProgress(bool attackInProgress, const Attack& attack = Attack());
     bool verifyExit();
 
     CentralWidget *_centralWidget;
@@ -59,6 +59,7 @@ private:
     XmppClient *_xmppClient;
     bool _connected;
     Attack _attack;
+    bool _attackInProgress;
 };
 
 #endif // MAINWINDOW_H
