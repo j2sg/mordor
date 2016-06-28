@@ -3,13 +3,14 @@
 
 #include "core_global.h"
 #include "types.h"
+#include "attack.h"
 #include <QString>
 
 class CORE_EXPORT Bot
 {
 public:
     Bot(const QString& id = "", const QString& ip = "", const QString& os = "",
-        BotState state = UndefinedState, int attackId = NO_ATTACK_ID);
+        BotState state = UndefinedState, const Attack& attack = Attack());
     void setId(const QString& id);
     const QString& id() const;
     void setIp(const QString& ip);
@@ -18,14 +19,14 @@ public:
     const QString& os() const;
     void setState(BotState state);
     BotState state() const;
-    void setAttackId(int attackId);
-    int attackId() const;
+    void setAttack(const Attack& attack);
+    const Attack& attack() const;
 private:
     QString _id;
     QString _ip;
     QString _os;
     BotState _state;
-    int _attackId;
+    Attack _attack;
 };
 
 #endif // BOT_H

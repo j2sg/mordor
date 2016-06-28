@@ -3,19 +3,19 @@
 
 #include <QString>
 
+#define NO_ATTACK_ID 0
+
 class Attack
 {
 public:
-    Attack();
+    Attack(int id = NO_ATTACK_ID, const QString& target = "");
+    void setId(int id);
     int id() const;
+    void setTarget(const QString& target);
     const QString& target() const;
-    bool inProgress() const;
-    void start(const QString& target);
-    void stop();
 private:
     int _id;
     QString _target;
-    bool _inProgress;
 };
 
 #endif // ATTACK_H

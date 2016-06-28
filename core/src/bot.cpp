@@ -1,7 +1,7 @@
 #include "bot.h"
 
-Bot::Bot(const QString& id, const QString& ip, const QString& os, BotState state, int attackId)
-    : _id(id), _ip(ip), _os(os), _state(state), _attackId(attackId)
+Bot::Bot(const QString& id, const QString& ip, const QString& os, BotState state, const Attack& attack)
+    : _id(id), _ip(ip), _os(os), _state(state), _attack(attack)
 {}
 
 void Bot::setId(const QString& id)
@@ -44,12 +44,12 @@ BotState Bot::state() const
     return _state;
 }
 
-void Bot::setAttackId(int attackId)
+void Bot::setAttack(const Attack& attack)
 {
-    _attackId = attackId;
+    _attack = attack;
 }
 
-int Bot::attackId() const
+const Attack& Bot::attack() const
 {
-    return _attackId;
+    return _attack;
 }

@@ -18,15 +18,13 @@ HEADERS += \
     include/connectdialog.h \
     include/centralwidget.h \
     include/global.h \
-    include/botnetmodel.h \
-    include/attack.h
+    include/botnetmodel.h
 
 SOURCES += src/main.cpp \
     src/mainwindow.cpp \
     src/connectdialog.cpp \
     src/centralwidget.cpp \
-    src/botnetmodel.cpp \
-    src/attack.cpp
+    src/botnetmodel.cpp
 
 RESOURCES += \
     resources/sauron.qrc
