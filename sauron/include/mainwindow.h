@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "attack.h"
 
 class CentralWidget;
 class QAction;
@@ -38,6 +39,7 @@ private:
     void createStatusBar();
     void createConnections();
     void setConnected(bool connected);
+    void setAttackInProgress(bool inProgress, const QString& target = "");
     bool verifyExit();
 
     CentralWidget *_centralWidget;
@@ -56,6 +58,7 @@ private:
 
     XmppClient *_xmppClient;
     bool _connected;
+    Attack _attack;
 };
 
 #endif // MAINWINDOW_H

