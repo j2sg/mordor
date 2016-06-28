@@ -21,6 +21,8 @@ protected:
 private slots:
     void connectToCC();
     void disconnectFromCC();
+    void startAttack();
+    void stopAttack();
     void about();
     void readyOnXmppClient();
     void disconnectedOnXmppClient();
@@ -42,6 +44,8 @@ private:
     QAction *_connectToCCAction;
     QAction *_disconnectFromCCAction;
     QAction *_exitAction;
+    QAction *_startAttackAction;
+    QAction *_stopAttackAction;
     QAction *_aboutAction;
     QMenu *_applicationMenu;
     QMenu *_attackMenu;

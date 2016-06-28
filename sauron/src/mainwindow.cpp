@@ -57,6 +57,16 @@ void MainWindow::disconnectFromCC()
         _xmppClient -> disconnectFromServer();
 }
 
+void MainWindow::startAttack()
+{
+
+}
+
+void MainWindow::stopAttack()
+{
+
+}
+
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("About %1").arg(APPLICATION_NAME),
@@ -149,6 +159,14 @@ void MainWindow::createActions()
     //_exitAction->setIcon(QIcon(""));
     _exitAction -> setStatusTip(tr("Salir de la aplicacion"));
 
+    _startAttackAction = new QAction(tr("&Iniciar..."), this);
+    //_startAttackAction->setIcon(QIcon(""));
+    _startAttackAction -> setStatusTip(tr("Iniciar ataque DDoS sobre un host objetivo"));
+
+    _stopAttackAction = new QAction(tr("&Parar"), this);
+    //_stopAttackAction->setIcon(QIcon(""));
+    _stopAttackAction -> setStatusTip(tr("Parar ataque DDoS en marcha"));
+
     _aboutAction = new QAction(tr("Acerca de"), this);
     //_aboutAction->setIcon(QIcon(""));
     _aboutAction -> setStatusTip(tr("Muestra informacion acerca de la aplicacion"));
@@ -156,12 +174,14 @@ void MainWindow::createActions()
 
 void MainWindow::createMenus()
 {
-    _applicationMenu = menuBar() -> addMenu(tr("A&plicacion"));
+    _applicationMenu = menuBar() -> addMenu(tr("Ap&licacion"));
     _applicationMenu -> addAction(_connectToCCAction);
     _applicationMenu -> addAction(_disconnectFromCCAction);
     _applicationMenu -> addAction(_exitAction);
 
     _attackMenu = menuBar() -> addMenu(tr("&Ataque"));
+    _attackMenu -> addAction(_startAttackAction);
+    _attackMenu -> addAction(_stopAttackAction);
 
     _helpMenu = menuBar() -> addMenu(tr("A&yuda"));
     _helpMenu -> addAction(_aboutAction);
@@ -174,6 +194,8 @@ void MainWindow::createToolBar()
     _applicationToolBar -> addAction(_disconnectFromCCAction);
 
     _attackToolBar = addToolBar(tr("Ataque"));
+    _attackToolBar -> addAction(_startAttackAction);
+    _attackToolBar -> addAction(_stopAttackAction);
 }
 
 void MainWindow::createStatusBar()
@@ -191,6 +213,10 @@ void MainWindow::createConnections()
             this, SLOT(disconnectFromCC()));
     connect(_exitAction, SIGNAL(triggered()),
             this, SLOT(close()));
+    connect(_startAttackAction, SIGNAL(triggered()),
+            this, SLOT(startAttack()));
+    connect(_stopAttackAction, SIGNAL(triggered()),
+            this, SLOT(stopAttack()));
     connect(_aboutAction, SIGNAL(triggered()),
             this, SLOT(about()));
     connect(_xmppClient, SIGNAL(ready()),
