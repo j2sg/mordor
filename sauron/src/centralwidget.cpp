@@ -5,6 +5,7 @@
 #include <QHeaderView>
 #include <QTextEdit>
 #include <QVBoxLayout>
+#include <QTime>
 
 CentralWidget::CentralWidget(QWidget *parent) : QWidget(parent)
 {
@@ -20,6 +21,11 @@ CentralWidget::~CentralWidget()
 Bot *CentralWidget::bot(const QString roomId)
 {
     return _botnetModel -> bots() -> value(roomId);
+}
+
+void CentralWidget::writeEvent(const QString& event)
+{
+    _eventsTextEdit -> append(QString("[%1] %2").arg(QTime::currentTime().toString()).arg(event));
 }
 
 void CentralWidget::insertBot(const QString& roomId, Bot *bot)

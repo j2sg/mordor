@@ -21,6 +21,7 @@ public:
     CentralWidget(QWidget *parent = 0);
     ~CentralWidget();
     Bot *bot(const QString roomId);
+    void writeEvent(const QString& event);
 public slots:
     void insertBot(const QString& roomId, Bot *bot);
     void modifyBot(const QString& roomId);
