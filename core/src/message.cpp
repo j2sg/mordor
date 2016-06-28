@@ -1,6 +1,7 @@
 #include "message.h"
 #include "getstatuscommand.h"
 #include "getbotstatecommand.h"
+#include "startattackcommand.h"
 #include "botstateresponse.h"
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -57,6 +58,8 @@ Message *Message::getInstanceOf(const QString& type)
         return new GetStatusCommand;
     else if(type == "GET_BOT_STATE_CMD")
         return new GetBotStateCommand;
+    else if(type == "START_ATTACK_CMD")
+        return new StartAttackCommand;
     else if(type == "BOT_STATE_RES")
         return new BotStateResponse;
 
