@@ -16,6 +16,8 @@ public:
     XmppClient(const QString& resource,
                const QString& roomName = DEFAULT_ROOM_NAME,
                const QString& muc = DEFAULT_MUC, QObject *parent = 0);
+    QString whoAmI();
+    QString whoAmIOnRoom();
 signals:
     void ready();
     void commandReceived(Message *command);

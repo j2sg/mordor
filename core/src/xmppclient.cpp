@@ -1,5 +1,6 @@
 #include "xmppclient.h"
 #include "getstatuscommand.h"
+#include "getbotstatecommand.h"
 #include "botstateresponse.h"
 #include <qxmpp/QXmppMucManager.h>
 #include <qxmpp/QXmppMessage.h>
@@ -11,6 +12,16 @@ XmppClient::XmppClient(const QString& resource, const QString& roomName, const Q
     _room = 0;
 
     createConnections();
+}
+
+QString XmppClient::whoAmI()
+{
+    return configuration().jid();
+}
+
+QString XmppClient::whoAmIOnRoom()
+{
+    return QString("%1/%2").arg(_room -> jid()).arg(_room -> nickName());
 }
 
 void XmppClient::connectToServer(const QString &jid, const QString &password)
@@ -26,12 +37,18 @@ void XmppClient::connectToServer(const QString &jid, const QString &password)
 
 void XmppClient::sendCommand(const Message& command)
 {
-    _room -> sendMessage(command.toJson());
+    if(command.to().isEmpty())
+        _room -> sendMessage(command.toJson());
+    else
+        sendMessage(command.to(), command.toJson());
 }
 
 void XmppClient::sendResponse(const Message& response)
 {
-    _room -> sendMessage(response.toJson());
+    if(response.to().isEmpty())
+        _room -> sendMessage(response.toJson());
+    else
+        sendMessage(response.to(), response.toJson());
 }
 
 void XmppClient::connectedOnXmppClient()
@@ -48,7 +65,8 @@ void XmppClient::errorOnXmppClient(QXmppClient::Error error)
 
 void XmppClient::messageReceivedOnRoom(const QXmppMessage& xmppMessage)
 {
-    if(xmppMessage.type() == QXmppMessage::GroupChat) {
+    if(xmppMessage.type() == QXmppMessage::Chat ||
+       xmppMessage.type() == QXmppMessage::GroupChat) {
         if(xmppMessage.stamp().isNull()) {
             Message *message = Message::createFromJson(xmppMessage.body());
 
@@ -57,7 +75,8 @@ void XmppClient::messageReceivedOnRoom(const QXmppMessage& xmppMessage)
             } else {
                 message -> setFrom(xmppMessage.from());
 
-                if(dynamic_cast<GetStatusCommand *>(message))
+                if(dynamic_cast<GetStatusCommand *>(message) ||
+                   dynamic_cast<GetBotStateCommand *>(message))
                     emit commandReceived(message);
                 else if(dynamic_cast<BotStateResponse *>(message))
                     emit responseReceived(message);
