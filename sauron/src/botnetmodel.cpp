@@ -117,7 +117,7 @@ QVariant BotnetModel::data(const QModelIndex& index, int role) const
         } else if(role == Qt::ForegroundRole) {
             Bot *bot = _bots -> value(botAt(index.row()));
 
-            return bot -> state() != Attack ? QColor(Qt::black) : QColor(Qt::red);
+            return bot -> state() != AttackInProgress ? QColor(Qt::black) : QColor(Qt::red);
         }
     }
 
