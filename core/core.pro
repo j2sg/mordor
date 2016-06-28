@@ -24,7 +24,8 @@ HEADERS += \
     include/core_global.h \
     include/startattackcommand.h \
     include/attackstartedresponse.h \
-    include/stopattackcommand.h
+    include/stopattackcommand.h \
+    include/attackstoppedresponse.h
 
 SOURCES += src/bot.cpp src/xmppclient.cpp \
     src/getstatuscommand.cpp \
@@ -33,7 +34,8 @@ SOURCES += src/bot.cpp src/xmppclient.cpp \
     src/getbotstatecommand.cpp \
     src/startattackcommand.cpp \
     src/attackstartedresponse.cpp \
-    src/stopattackcommand.cpp
+    src/stopattackcommand.cpp \
+    src/attackstoppedresponse.cpp
 
 LIBS += -lqxmpp
 
