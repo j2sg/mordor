@@ -4,10 +4,9 @@
 #include <QObject>
 #include <QString>
 
-#define RPS_BY_DEFAULT 5
+#define RPS_BY_DEFAULT 10
 
 class QNetworkAccessManager;
-class QNetworkReply;
 
 class Attacker : public QObject
 {

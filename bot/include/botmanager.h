@@ -43,7 +43,6 @@ private:
     QThread *_attackerThread;
     Attacker *_attacker;
     QNetworkAccessManager *_networkAccessManager;
-
 };
 
 #endif // BOTMANAGER_H
