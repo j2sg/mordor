@@ -5,6 +5,8 @@
 #include "xmppclient.h"
 #include "attack.h"
 
+#define MAINWINDOW_MIN_WIDTH 720
+
 class CentralWidget;
 class QAction;
 class QMenu;
@@ -55,7 +57,8 @@ private:
     QMenu *_helpMenu;
     QToolBar *_applicationToolBar;
     QToolBar *_attackToolBar;
-    QLabel *_ccLabel;
+    QLabel *_connectionStatusLabel;
+    QLabel *_connectionLabel;
     QLabel *_modeLabel;
 
     XmppClient *_xmppClient;

@@ -31,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createConnections();
     setWindowTitle(APPLICATION_NAME);
     setWindowIcon(QIcon(":images/sauron.png"));
+    setMinimumWidth(MAINWINDOW_MIN_WIDTH);
+
     setConnected(false);
     setAttackInProgress(false);
 }
@@ -54,6 +56,8 @@ void MainWindow::connectToCC()
         QString password = dialog.password();
 
         _xmppClient -> connectToServer(QString("%1@%2").arg(username).arg(server), password);
+
+        _centralWidget -> writeEvent(QString("Conectando a CC como %1 ...").arg(_xmppClient -> whoAmI()));
     }
 }
 
@@ -71,7 +75,7 @@ void MainWindow::startAttack()
     if(ok && !target.isEmpty()) {
         setAttackInProgress(true, Attack(_attack.id() + 1, target));
 
-        _centralWidget -> writeEvent(QString("Modo Ataque++ Target: %1").arg(target));
+        _centralWidget -> writeEvent(QString("Modo Ataque++ Objetivo: %1").arg(target));
 
         _xmppClient -> sendCommand(StartAttackCommand(_attack.target(), _attack.id()));
 
@@ -117,8 +121,6 @@ void MainWindow::readyOnXmppClient()
 {
     setConnected(true);
     setAttackInProgress(false);
-
-    _centralWidget -> writeEvent(QString("Conectado a CC como %1").arg(_xmppClient -> whoAmI()));
 }
 
 void MainWindow::disconnectedOnXmppClient()
@@ -149,7 +151,7 @@ void MainWindow::responseReceivedOnXmppClient(Message *response)
         } else if(!_attackInProgress && bot -> state() == AttackInProgress) {
             setAttackInProgress(true, bot -> attack());
 
-            _centralWidget -> writeEvent(QString("Modo Ataque++ Ataque en progreso en %1 sobre %2").arg(botStateResponse -> from()).arg(bot -> attack().target()));
+            _centralWidget -> writeEvent(QString("Modo Ataque++ Objetivo: %1 (%2)").arg(bot -> attack().target()).arg(botStateResponse -> from()));
 
             _xmppClient -> sendCommand(StartAttackCommand(bot -> attack().target(), bot -> attack().id()));
 
@@ -185,7 +187,7 @@ void MainWindow::botAddedOnXmppClient(const QString &roomId)
 
         _xmppClient -> sendCommand(command);
 
-        _centralWidget -> writeEvent(QString("Enviando GET_BOT_STATE_CMD [1:1] (Entrada %1)").arg(roomId));
+        _centralWidget -> writeEvent(QString("Enviado GET_BOT_STATE_CMD [1:1] (Entrada %1)").arg(roomId));
     }
 }
 
@@ -290,13 +292,16 @@ void MainWindow::createToolBar()
 
 void MainWindow::createStatusBar()
 {
-    _ccLabel = new QLabel;
+    _connectionStatusLabel = new QLabel;
+
+    _connectionLabel = new QLabel;
 
     _modeLabel = new QLabel(tr("Modo:       "));
     _modeLabel -> setMinimumSize(_modeLabel -> sizeHint());
     _modeLabel -> setAlignment(Qt::AlignRight);
 
-    statusBar() -> addWidget(_ccLabel);
+    statusBar() -> addWidget(_connectionStatusLabel);
+    statusBar() -> addWidget(_connectionLabel);
     statusBar() -> addWidget(_modeLabel, 1);
 }
 
@@ -336,7 +341,10 @@ void MainWindow::setConnected(bool connected)
     _connectToCCAction -> setEnabled(!_connected);
     _disconnectFromCCAction -> setEnabled(_connected);
     _attackMenu -> setEnabled(_connected);
-    _ccLabel -> setText(_connected ? tr("Conectado %1").arg(_xmppClient -> whoAmI()) : tr("Desconectado"));
+    _connectionStatusLabel -> setPixmap(QPixmap(QString(":/images/%1.png")
+                                       .arg(_connected ? "connect" : "disconnect"))
+                                       .scaled(QSize(16, 16)));
+    _connectionLabel -> setText(_connected ? tr("Conectado %1").arg(_xmppClient -> whoAmI()) : tr("Desconectado"));
 }
 
 void MainWindow::setAttackInProgress(bool attackInProgress, const Attack& attack)
@@ -346,6 +354,8 @@ void MainWindow::setAttackInProgress(bool attackInProgress, const Attack& attack
 
     _startAttackAction -> setEnabled(_connected && !_attackInProgress);
     _stopAttackAction -> setEnabled(_connected && _attackInProgress);
+
+    setWindowTitle(QString("%1 %2").arg(APPLICATION_NAME).arg(_attackInProgress ? tr("- Atacando %1").arg(_attack.target()) : ""));
     _modeLabel -> setText(tr("Modo: %1").arg(_connected ? (attackInProgress ? tr("ataque") : tr("espera")) : "      "));
 }
 

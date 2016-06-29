@@ -95,7 +95,7 @@ QVariant BotnetModel::data(const QModelIndex& index, int role) const
     if(index.isValid()) {
         if(role == Qt::TextAlignmentRole) {
             switch(index.column()) {
-            case ColumnBotId:
+            case ColumnBotIP:
             case ColumnBotStatus:
                 return int(Qt::AlignCenter);
             default:
