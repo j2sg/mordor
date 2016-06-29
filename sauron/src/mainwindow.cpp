@@ -70,9 +70,9 @@ void MainWindow::disconnectFromCC()
 void MainWindow::startAttack()
 {
     bool ok;
-    QString target = QInputDialog::getText(this, tr("Iniciar ataque DDoS"), tr("URL Objetivo:"), QLineEdit::Normal, "", &ok);
+    QString target = QInputDialog::getText(this, tr("Iniciar ataque DDoS"), tr("URL Objetivo:"), QLineEdit::Normal, "http://", &ok);
 
-    if(ok && !target.isEmpty()) {
+    if(ok && !target.isEmpty() && target != "http://") {
         setAttackInProgress(true, Attack(_attack.id() + 1, target));
 
         _centralWidget -> writeEvent(QString("Modo Ataque++ Objetivo: %1").arg(target));
