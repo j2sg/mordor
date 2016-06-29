@@ -69,6 +69,9 @@ void XmppClient::messageReceivedOnRoom(const QXmppMessage& xmppMessage)
             if(!message) {
                 emit badMessageReceived(xmppMessage.body());
             } else {
+                if(xmppMessage.type() == QXmppMessage::Chat)
+                    message -> setTo(xmppMessage.to());
+
                 message -> setFrom(xmppMessage.from());
 
                 if(dynamic_cast<GetStatusCommand *>(message) ||
