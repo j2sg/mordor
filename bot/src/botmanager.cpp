@@ -39,14 +39,14 @@ void BotManager::disconnectFromCC()
 {
     _xmppClient -> disconnectFromServer();
 
-    writeEvent("Desconectado de C&C");
+    writeEvent("Desconectado de CC");
 }
 
 void BotManager::readyOnXmppClient()
 {
     _bot -> setState(WaitingForCommand);
 
-    writeEvent(QString("Conectado a C&C como %1").arg(_xmppClient -> whoAmI()));
+    writeEvent(QString("Conectado a CC como %1").arg(_xmppClient -> whoAmI()));
 }
 
 void BotManager::commandReceivedOnBot(Message *command)
@@ -71,7 +71,8 @@ void BotManager::commandReceivedOnBot(Message *command)
     } else if(StartAttackCommand *startAttackCommand = dynamic_cast<StartAttackCommand *>(command)) {
         response = new AttackStartedResponse(startAttackCommand -> id());
 
-        writeEvent(QString("Recibido START_ATTACK_CMD [1:N] de %1 con (id: %2 target: %3)")
+        writeEvent(QString("Recibido START_ATTACK_CMD [1:%1] de %2 con (id: %3 target: %4)")
+                   .arg(!command -> to().isEmpty() ? "1" : "N")
                    .arg(startAttackCommand -> from())
                    .arg(startAttackCommand -> id())
                    .arg(startAttackCommand -> target()));
