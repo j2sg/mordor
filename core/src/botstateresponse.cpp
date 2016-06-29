@@ -60,7 +60,7 @@ void BotStateResponse::fromJson(const QString& json)
     QJsonObject attackObject = botObject["attack"].toObject();
 
     int attackId = attackObject["id"].toInt();
-    QString attackTarget = botObject["target"].toString();
+    QString attackTarget = attackObject["target"].toString();
 
     Attack botAttack(attackId, attackTarget);
 
