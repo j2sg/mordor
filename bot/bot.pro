@@ -8,7 +8,7 @@ OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
 
-QT += network xml
+QT += core network xml
 
 DEPENDPATH += . include src ../core
 INCLUDEPATH += . include ../core/include
@@ -16,12 +16,14 @@ INCLUDEPATH += . include ../core/include
 # Input
 SOURCES += src/main.cpp \
     src/botmanager.cpp \
-    src/storagemanager.cpp
+    src/storagemanager.cpp \
+    src/attacker.cpp
 
 HEADERS += \
     include/botmanager.h \
     include/storagemanager.h \
-    include/global.h
+    include/global.h \
+    include/attacker.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../core/release/ -lcore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../core/debug/ -lcore
