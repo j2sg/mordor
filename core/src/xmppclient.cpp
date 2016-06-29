@@ -54,9 +54,26 @@ void XmppClient::sendResponse(const Message& response)
         sendMessage(response.to(), response.toJson());
 }
 
-void XmppClient::connectedOnXmppClient()
+void XmppClient::joinRoom()
 {
-    joinRoom();
+    if(!_room) {
+        QXmppMucManager *manager = findExtension<QXmppMucManager>();
+
+        if(!manager) {
+            manager = new QXmppMucManager;
+            addExtension(manager);
+        }
+
+        _room = manager -> addRoom(QString("%1@%2.%3").arg(_roomName)
+                                                      .arg(_muc)
+                                                      .arg(configuration().domain()));
+
+        _room -> setNickName(configuration().jid().split('@').at(0));
+
+        createRoomConnections();
+    }
+
+    _room -> join();
 }
 
 void XmppClient::messageReceivedOnRoom(const QXmppMessage& xmppMessage)
@@ -88,32 +105,10 @@ void XmppClient::messageReceivedOnRoom(const QXmppMessage& xmppMessage)
     }
 }
 
-void XmppClient::joinRoom()
-{
-    if(!_room) {
-        QXmppMucManager *manager = findExtension<QXmppMucManager>();
-
-        if(!manager) {
-            manager = new QXmppMucManager;
-            addExtension(manager);
-        }
-
-        _room = manager -> addRoom(QString("%1@%2.%3").arg(_roomName)
-                                                      .arg(_muc)
-                                                      .arg(configuration().domain()));
-
-        _room -> setNickName(configuration().jid().split('@').at(0));
-
-        createRoomConnections();
-    }
-
-    _room -> join();
-}
-
 void XmppClient::createConnections()
 {
     connect(this, SIGNAL(connected()),
-            this, SLOT(connectedOnXmppClient()));
+            this, SLOT(joinRoom()));
 }
 
 void XmppClient::createRoomConnections()

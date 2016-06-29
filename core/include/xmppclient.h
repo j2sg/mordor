@@ -31,10 +31,9 @@ public slots:
     void sendCommand(const Message& command);
     void sendResponse(const Message& response);
 private slots:
-    void connectedOnXmppClient();
+    void joinRoom();
     void messageReceivedOnRoom(const QXmppMessage& xmppMessage);
 private:
-    void joinRoom();
     void createConnections();
     void createRoomConnections();
 
