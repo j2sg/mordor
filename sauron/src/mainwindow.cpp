@@ -151,7 +151,7 @@ void MainWindow::responseReceivedOnXmppClient(Message *response)
 
             _centralWidget -> writeEvent(QString("Modo Ataque++ Ataque en progreso en %1 sobre %2").arg(botStateResponse -> from()).arg(bot -> attack().target()));
 
-            _xmppClient -> sendCommand(StartAttackCommand(_attack.target(), _attack.id()));
+            _xmppClient -> sendCommand(StartAttackCommand(bot -> attack().target(), bot -> attack().id()));
 
             _centralWidget -> writeEvent(QString("Enviado START_ATTACK_CMD [1:N]"));
         }
@@ -342,9 +342,7 @@ void MainWindow::setConnected(bool connected)
 void MainWindow::setAttackInProgress(bool attackInProgress, const Attack& attack)
 {
     _attackInProgress = attackInProgress;
-
-    if(_attackInProgress)
-        _attack = attack;
+    _attack = attack;
 
     _startAttackAction -> setEnabled(_connected && !_attackInProgress);
     _stopAttackAction -> setEnabled(_connected && _attackInProgress);
