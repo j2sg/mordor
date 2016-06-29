@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "xmppclient.h"
 #include "attack.h"
 
 class CentralWidget;
@@ -9,7 +10,6 @@ class QAction;
 class QMenu;
 class QToolBar;
 class QLabel;
-class XmppClient;
 class Message;
 
 class MainWindow : public QMainWindow
@@ -30,6 +30,7 @@ private slots:
     void responseReceivedOnXmppClient(Message *response);
     void botAddedOnXmppClient(const QString &roomId);
     void botRemovedOnXmppClient(const QString &roomId);
+    void errorOnXmppClient(QXmppClient::Error error);
 private:
     void createWidgets();
     void createCentralWidget();

@@ -198,6 +198,27 @@ void MainWindow::botRemovedOnXmppClient(const QString &roomId)
     }
 }
 
+void MainWindow::errorOnXmppClient(QXmppClient::Error error)
+{
+    _xmppClient -> disconnectFromServer();
+
+    switch(static_cast<int>(error)) {
+    case QXmppClient::SocketError:
+        QMessageBox::warning(this, tr("Conectar a CC"), tr("No es posible establecer conexion con %1")
+                             .arg(_xmppClient -> configuration().domain()), QMessageBox::Ok);
+        break;
+    case QXmppClient::KeepAliveError:
+        QMessageBox::critical(this, tr("Conexion con CC"), tr("No es posible mantener la conexion con %1")
+                             .arg(_xmppClient -> configuration().domain()), QMessageBox::Ok);
+        break;
+    case QXmppClient::XmppStreamError:
+        QMessageBox::warning(this, tr("Conectar a CC"), tr("Usuario y/o contraseña incorrectos"), QMessageBox::Ok);
+        break;
+    }
+
+    qDebug() << "Error" << error;
+}
+
 void MainWindow::createWidgets()
 {
     createCentralWidget();
@@ -305,6 +326,8 @@ void MainWindow::createConnections()
             this, SLOT(botAddedOnXmppClient(const QString&)));
     connect(_xmppClient, SIGNAL(botRemoved(const QString&)),
             this, SLOT(botRemovedOnXmppClient(const QString&)));
+    connect(_xmppClient, SIGNAL(error(QXmppClient::Error)),
+            this, SLOT(errorOnXmppClient(QXmppClient::Error)));
 }
 
 void MainWindow::setConnected(bool connected)
