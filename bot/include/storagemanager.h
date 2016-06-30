@@ -4,6 +4,8 @@
 #include <QVariant>
 #include <QString>
 
+#define DEFAULT_SERVER "jabber.odyssey.net"
+
 class StorageManager
 {
 public:
