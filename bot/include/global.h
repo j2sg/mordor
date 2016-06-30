@@ -7,7 +7,7 @@
 #define AUTHOR_EMAIL          "jjslzgc@gmail.com"
 #define APPLICATION_NAME      "B0t4M0rd0r"
 #define APPLICATION_NAME_LONG "B0t For M0rd0r B0tn€t"
-#define APPLICATION_VERSION   "0.0.1"
+#define APPLICATION_VERSION   "0.1.0"
 #define APPLICATION_YEARS     "2016"
 #define APPLICATION_WEB       "https://bitbucket.org/j2sg/mordor"
 
