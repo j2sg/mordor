@@ -1,0 +1,21 @@
+- Requisitos
+
+    - Framework Qt 5.4.x o superior - Disponible en los repositorios de distribuciones GNU/Linux o en https://www.qt.io/download/
+    - Libreria QXmpp 0.9.x          - https://github.com/qxmpp-project/qxmpp
+
+- Compilar Mordor
+
+    - Generacion de fichero Makefile especifico de la plataforma
+
+        qmake
+
+    - Compilacion
+
+        - En sistemas Unix
+
+            make
+
+        - En sistemas Microsoft Windows
+
+            mingw32-make
+
