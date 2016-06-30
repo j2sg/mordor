@@ -16,6 +16,7 @@ bool StorageManager::createConfig(bool overwrite)
     QSettings setting("config.ini", QSettings::IniFormat);
 
     setting.setValue("Executed", true);
+    setting.setValue("server", DEFAULT_SERVER);
     setting.setValue("jid",      "");
     setting.setValue("password", "");
 
