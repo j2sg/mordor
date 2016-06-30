@@ -1,1 +1,34 @@
-Mordor - Prueba de Concepto de Botnet
+Mordor v0.1.0
+
+   Copyright (c) 2016 Juan Jose Salazar Garcia - jjslzgc@gmail.com
+
+   - Descripcion
+
+      Mordor es una prueba de concepto de una botnet centralizada que hace 
+      uso del protocolo Jabber/XMPP para coordinar los distintos bots que la 
+      forman. Mordor presenta dos elementos, Sauron y los bots. Sauron representa
+      la interfaz del botmaster para visualizar el estado de la botnet e iniciar 
+      y parar ataques. Los bots implementan ataques de inundacion HTTP GET dirigidos 
+      a un servidor HTTP objetivo indicado por el botmaster a traves de Sauron.
+
+   - Descargo de responsabilidades
+
+      Mordor ha sido desarrollada con fines totalmente didacticos como parte 
+      de la asignatura Seguridad en Redes de la Escuela Superior de Informatica 
+      de Ciudad Real. El autor no acepta ninguna responsabidad por los daños, sean
+      intencionados o no, causados por esta aplicacion.
+
+   - Detalles
+
+      - Desarrollado en C++ con el framework Qt5.
+      - Multiplataforma. Mordor funciona correctamente en sistemas operativos 
+        GNU/Linux y Microsoft Windows (7 y superiores).
+
+   - Instalacion
+
+      Lea el fichero INSTALL para obtener detalles acerca de la instalacion
+
+   - Licencia
+
+      Mordor esta liberado bajo la licencia GPL version 3, lea el fichero 
+      LICENSE para obtener mas detalles al respecto.
