@@ -29,6 +29,6 @@
 #define APPLICATION_NAME_LONG "B0t For M0rd0r B0tn€t"
 #define APPLICATION_VERSION   "0.1.0"
 #define APPLICATION_YEARS     "2016"
-#define APPLICATION_WEB       "https://bitbucket.org/j2sg/mordor"
+#define APPLICATION_WEB       "https://github.com/j2sg/mordor"
 
 #endif // GLOBAL_H
