@@ -19,7 +19,6 @@
  **/
 
 #include "message.h"
-#include "getstatuscommand.h"
 #include "getbotstatecommand.h"
 #include "startattackcommand.h"
 #include "stopattackcommand.h"
@@ -77,9 +76,7 @@ Message *Message::createFromJson(const QString& json)
 
 Message *Message::getInstanceOf(const QString& type)
 {
-    if(type == "GET_STATUS_CMD")
-        return new GetStatusCommand;
-    else if(type == "GET_BOT_STATE_CMD")
+    if(type == "GET_BOT_STATE_CMD")
         return new GetBotStateCommand;
     else if(type == "START_ATTACK_CMD")
         return new StartAttackCommand;

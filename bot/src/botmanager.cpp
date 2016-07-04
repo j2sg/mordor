@@ -25,7 +25,6 @@
 #include "bot.h"
 #include "attacker.h"
 #include "storagemanager.h"
-#include "getstatuscommand.h"
 #include "getbotstatecommand.h"
 #include "startattackcommand.h"
 #include "stopattackcommand.h"
@@ -102,8 +101,7 @@ void BotManager::commandReceivedOnBot(Message *command)
     Message *response = 0;
     bool isValid = true;
 
-    if(dynamic_cast<GetStatusCommand *>(command) ||
-       dynamic_cast<GetBotStateCommand *>(command)) {
+    if(dynamic_cast<GetBotStateCommand *>(command)) {
         response = new BotStateResponse;
         dynamic_cast<BotStateResponse *>(response) -> setBot(_bot);
 

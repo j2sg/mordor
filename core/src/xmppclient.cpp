@@ -19,7 +19,6 @@
  **/
 
 #include "xmppclient.h"
-#include "getstatuscommand.h"
 #include "getbotstatecommand.h"
 #include "startattackcommand.h"
 #include "stopattackcommand.h"
@@ -111,8 +110,7 @@ void XmppClient::messageReceivedOnRoom(const QXmppMessage& xmppMessage)
 
                 message -> setFrom(xmppMessage.from());
 
-                if(dynamic_cast<GetStatusCommand *>(message) ||
-                   dynamic_cast<GetBotStateCommand *>(message) ||
+                if(dynamic_cast<GetBotStateCommand *>(message) ||
                    dynamic_cast<StartAttackCommand *>(message) ||
                    dynamic_cast<StopAttackCommand *>(message))
                     emit commandReceived(message);

@@ -23,7 +23,6 @@
 #include "centralwidget.h"
 #include "connectdialog.h"
 #include "xmppclient.h"
-#include "getstatuscommand.h"
 #include "getbotstatecommand.h"
 #include "startattackcommand.h"
 #include "stopattackcommand.h"
