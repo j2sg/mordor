@@ -81,6 +81,7 @@ void CentralWidget::createWidgets()
 
     _eventsTextEdit = new QTextEdit;
     _eventsTextEdit -> setFixedHeight(EVENTS_HEIGHT);
+    _eventsTextEdit -> setReadOnly(true);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
 
