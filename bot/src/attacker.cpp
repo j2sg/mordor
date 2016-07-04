@@ -44,13 +44,13 @@ void Attacker::attack()
 void Attacker::sendHttpGetRequestToTarget()
 {
     _networkAccessManager -> get(QNetworkRequest(QUrl(_target)));
-
-    emit done();
 }
 
 void Attacker::finishedOnNetworkAccessManager(QNetworkReply *reply)
 {
     reply -> deleteLater();
+
+    emit done();
 }
 
 void Attacker::createConnections()
