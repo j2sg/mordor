@@ -27,8 +27,6 @@
 Attacker::Attacker(ushort requestPerSecond) : _requetsPerSecond(requestPerSecond)
 {
     _networkAccessManager = new QNetworkAccessManager(this);
-
-    createConnections();
 }
 
 void Attacker::setTarget(const QString &target)
@@ -43,18 +41,9 @@ void Attacker::attack()
 
 void Attacker::sendHttpGetRequestToTarget()
 {
-    _networkAccessManager -> get(QNetworkRequest(QUrl(_target)));
-}
+    QNetworkReply *reply = _networkAccessManager -> get(QNetworkRequest(QUrl(_target)));
 
-void Attacker::finishedOnNetworkAccessManager(QNetworkReply *reply)
-{
     reply -> deleteLater();
 
     emit done();
-}
-
-void Attacker::createConnections()
-{
-    connect(_networkAccessManager, SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(finishedOnNetworkAccessManager(QNetworkReply*)));
 }

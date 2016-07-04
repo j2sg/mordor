@@ -24,10 +24,9 @@
 #include <QObject>
 #include <QString>
 
-#define RPS_BY_DEFAULT 10
+#define RPS_BY_DEFAULT 1
 
 class QNetworkAccessManager;
-class QNetworkReply;
 
 class Attacker : public QObject
 {
@@ -41,10 +40,7 @@ public slots:
     void attack();
 private slots:
     void sendHttpGetRequestToTarget();
-    void finishedOnNetworkAccessManager(QNetworkReply *reply);
 private:
-    void createConnections();
-
     QString _target;
     ushort _requetsPerSecond;
     QNetworkAccessManager *_networkAccessManager;
