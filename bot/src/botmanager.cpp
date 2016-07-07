@@ -182,6 +182,8 @@ void BotManager::finishedOnNetworkAccessManager(QNetworkReply *reply)
 
 void BotManager::successOnXmppRegClient(const QString& server, const QString &username, const QString &password)
 {
+    _xmppRegClient -> disconnectFromServer();
+
     writeEvent(QString("Registro exitoso en %1 para Usuario: %2 y Password: %3").arg(server).arg(username).arg(password));
 
     StorageManager::writeConfig("jid", QString("%1@%2").arg(username).arg(server));
@@ -192,6 +194,8 @@ void BotManager::successOnXmppRegClient(const QString& server, const QString &us
 
 void BotManager::failureOnXmppRegClient(const QString& server, const QString& username, const QString& password)
 {
+    _xmppRegClient -> disconnectFromServer();
+
     writeEvent(QString("Registro fallido en %1 para Usuario: %2 y Password: %3 (Proximo intento en %4 minutos)").arg(server).arg(username).arg(password).arg(MINUTES_OF_WAITING));
 
     QTimer::singleShot(MINUTES_OF_WAITING * 60 * 1000, this, SLOT(registerOnCC()));
