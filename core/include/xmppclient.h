@@ -1,7 +1,3 @@
-#ifndef XMPPCLIENT_H
-#define XMPPCLIENT_H
-
-#include "core_global.h"
 /**
  *  This file is part of Mordor.
  *
@@ -22,6 +18,10 @@
  *
  **/
 
+#ifndef XMPPCLIENT_H
+#define XMPPCLIENT_H
+
+#include "core_global.h"
 #include <qxmpp/QXmppClient.h>
 
 #define DEFAULT_ROOM_NAME "m0rd0r"
