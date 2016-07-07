@@ -19,52 +19,83 @@
  **/
 
 #include "xmppregclient.h"
-#include <QXmlStreamReader>
-#include <QXmlStreamWriter>
+#include <qxmpp/QXmppRegisterIq.h>
 
 XmppRegClient::XmppRegClient(const QString& server, QObject *parent)
-    : QObject(parent), _server(server)
+    : QXmppClient(parent), _server(server)
 {
-    _socket = new QTcpSocket(this);
-
     createConnections();
 }
 
 void XmppRegClient::sendRegistrationRequest(const QString& username, const QString& password)
 {
-    // TO DO
+    _username = username;
+    _password = password;
 
-    emit failure(_server, username, password);
+    QXmppConfiguration config;
+
+    config.setHost(_server);
+    config.setDomain(_server);
+    config.setPort(_port);
+    config.setUseSASLAuthentication(false);
+    config.setUseNonSASLAuthentication(false);
+
+    connectToServer(config);
 }
 
-void XmppRegClient::connectedOnSocket()
+void XmppRegClient::connectedOnClient()
 {
-    qDebug() << "Connected to" << _server;
+    QXmppRegisterIq iq;
+
+    iq.setId("reg1");
+    iq.setType(QXmppIq::Get);
+    iq.setTo(_server);
+
+    sendPacket(iq);
 }
 
-void XmppRegClient::disconnectedOnSocket()
+void XmppRegClient::iqReceivedOnClient(const QXmppIq& iq)
 {
-    qDebug() << "Disconnected from" << _server;
+    if(iq.type() == QXmppIq::Result) {
+        if(iq.id() == "reg1") {
+            QXmppRegisterIq setIq;
+
+            setIq.setId("reg2");
+            setIq.setType(QXmppIq::Set);
+            setIq.setTo(_server);
+            setIq.setUsername(_username);
+            setIq.setPassword(_password);
+
+            sendPacket(setIq);
+        } else if(iq.id() == "reg2")
+            emit success(_server, _username, _password);
+    } else if(iq.type() == QXmppIq::Error)
+        emit failure(_server, _username, _password);
 }
 
-void XmppRegClient::readyReadOnSocket()
+void XmppRegClient::errorOnClient(QXmppClient::Error error)
 {
-    qDebug() << _socket -> readAll();
+    Q_UNUSED(error);
+
+    emit failure(_server, _username, _password);
 }
 
-void XmppRegClient::errorOnSocket(QAbstractSocket::SocketError error)
+void XmppRegClient::connectToServer(const QXmppConfiguration& configuration, const QXmppPresence& initialPresence)
 {
-    qDebug() << "Error:" << error;
+    QXmppClient::connectToServer(configuration, initialPresence);
+}
+
+void XmppRegClient::connectToServer(const QString& jid, const QString& password)
+{
+    QXmppClient::connectToServer(jid, password);
 }
 
 void XmppRegClient::createConnections()
 {
-    connect(_socket,SIGNAL(connected()),
-            this, SLOT(connectedOnSocket()));
-    connect(_socket, SIGNAL(disconnected()),
-            this, SLOT(disconnectedOnSocket()));
-    connect(_socket, SIGNAL(readyRead()),
-            this, SLOT(readyReadOnSocket()));
-    connect(_socket, SIGNAL(error(QAbstractSocket::SocketError)),
-            this, SLOT(errorOnSocket(QAbstractSocket::SocketError)));
+    connect(this, SIGNAL(connected()),
+            this, SLOT(connectedOnClient()));
+    connect(this, SIGNAL(iqReceived(const QXmppIq&)),
+            this, SLOT(iqReceivedOnClient(QXmppIq)));
+    connect(this, SIGNAL(error(QXmppClient::Error)),
+            this, SLOT(errorOnClient(QXmppClient::Error)));
 }

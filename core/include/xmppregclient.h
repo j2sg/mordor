@@ -22,10 +22,9 @@
 #define XMPPREGCLIENT_H
 
 #include "core_global.h"
-#include <QObject>
-#include <QTcpSocket>
+#include <qxmpp/QXmppClient.h>
 
-class CORE_EXPORT XmppRegClient : public QObject
+class CORE_EXPORT XmppRegClient : public QXmppClient
 {
     Q_OBJECT
 public:
@@ -36,16 +35,18 @@ signals:
 public slots:
     void sendRegistrationRequest(const QString& username, const QString& password);
 private slots:
-    void connectedOnSocket();
-    void disconnectedOnSocket();
-    void readyReadOnSocket();
-    void errorOnSocket(QAbstractSocket::SocketError error);
+    void connectedOnClient();
+    void iqReceivedOnClient(const QXmppIq& iq);
+    void errorOnClient(QXmppClient::Error error);
 private:
+    void connectToServer(const QXmppConfiguration& configuration, const QXmppPresence& initialPresence = QXmppPresence());
+    void connectToServer(const QString& jid, const QString& password);
     void createConnections();
 
     QString _server;
-    QTcpSocket *_socket;
     static const int _port = 5222;
+    QString _username;
+    QString _password;
 };
 
 #endif // XMPPREGCLIENT_H
