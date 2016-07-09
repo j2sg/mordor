@@ -41,6 +41,7 @@ public:
     BotState state() const;
     void setAttack(const Attack& attack);
     const Attack& attack() const;
+    QString toString() const;
 private:
     QString _id;
     QString _ip;

@@ -106,18 +106,13 @@ void BotManager::commandReceivedOnBot(Message *command)
         dynamic_cast<BotStateResponse *>(response) -> setBot(_bot);
 
         writeEvent(QString("Recibido GET_BOT_STATE_CMD [1:1] de %1").arg(command -> from()));
-        writeEvent(QString("Enviado BOT_STATE_RES [1:1] con (id: %1 ip: %2 os: %3 estado: %4 attackId: %5 target: %6) a %7")
-                   .arg(_bot -> id())
-                   .arg(_bot -> ip())
-                   .arg(_bot -> os())
-                   .arg(_bot -> state())
-                   .arg(_bot -> attack().id())
-                   .arg(!_bot -> attack().target().isEmpty() ? _bot -> attack().target() : "-")
+        writeEvent(QString("Enviado BOT_STATE_RES [1:1] con (%1) a %2")
+                   .arg(_bot -> toString())
                    .arg(command -> from()));
     } else if(StartAttackCommand *startAttackCommand = dynamic_cast<StartAttackCommand *>(command)) {
         response = new AttackStartedResponse(startAttackCommand -> id());
 
-        writeEvent(QString("Recibido START_ATTACK_CMD [1:%1] de %2 con (id: %3 target: %4)")
+        writeEvent(QString("Recibido START_ATTACK_CMD [1:%1] de %2 con (id: %3 objetivo: %4)")
                    .arg(!command -> to().isEmpty() ? "1" : "N")
                    .arg(startAttackCommand -> from())
                    .arg(startAttackCommand -> id())
@@ -129,17 +124,15 @@ void BotManager::commandReceivedOnBot(Message *command)
         _attacker -> setTarget(_bot -> attack().target());
         _attackerThread -> start();
 
-        writeEvent(QString("Iniciando ataque (id: %1 target: %2)")
-                   .arg(_bot -> attack().id())
-                   .arg(_bot -> attack().target()));
+        writeEvent(QString("Iniciando ataque (%1)")
+                   .arg(_bot -> attack().toString()));
         writeEvent(QString("Enviado ATTACK_STARTED_RES [1:1] a %1").arg(command -> from()));
     } else if(dynamic_cast<StopAttackCommand *>(command)) {
         response = new AttackStoppedResponse(command -> id());
 
         writeEvent(QString("Recibido STOP_ATTACK_CMD [1:N] de %1").arg(command -> from()));
-        writeEvent(QString("Parando ataque (id: %1 target: %2)")
-                   .arg(_bot -> attack().id())
-                   .arg(_bot -> attack().target()));
+        writeEvent(QString("Parando ataque (%1)")
+                   .arg(_bot -> attack().toString()));
 
         _bot -> setState(WaitingForCommand);
         _bot -> setAttack(Attack());

@@ -73,3 +73,29 @@ const Attack& Bot::attack() const
 {
     return _attack;
 }
+
+QString Bot::toString() const
+{
+    QString strState;
+
+    switch(_state) {
+    case WaitingForCC:
+        strState = "WaitingForCC";
+        break;
+    case WaitingForCommand:
+        strState = "WaitingForCommand";
+        break;
+    case AttackInProgress:
+        strState = "AttackInProgress";
+        break;
+    default:
+        strState = "UndefinedState";
+    }
+
+    return QString("id: %1 ip: %2 os: %3 estado: %4 ataque: (%5)")
+           .arg(_id)
+           .arg(_ip)
+           .arg(_os)
+           .arg(strState)
+           .arg(_attack.toString());
+}

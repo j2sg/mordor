@@ -43,3 +43,10 @@ const QString& Attack::target() const
 {
     return _target;
 }
+
+QString Attack::toString() const
+{
+    return QString("id: %1 objetivo: %2 ")
+           .arg(_id != NO_ATTACK_ID ? QString::number(_id) : "-")
+           .arg(!_target.isEmpty() ? _target : "-");
+}

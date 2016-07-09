@@ -34,6 +34,7 @@ public:
     int id() const;
     void setTarget(const QString& target);
     const QString& target() const;
+    QString toString() const;
 private:
     int _id;
     QString _target;
