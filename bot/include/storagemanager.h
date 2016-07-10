@@ -23,8 +23,9 @@
 
 #include <QVariant>
 #include <QString>
+#include <QStringList>
 
-#define DEFAULT_SERVER "jabber.odyssey.net"
+#define SERVER_LIST_FILE "server.list"
 
 class StorageManager
 {
@@ -33,6 +34,7 @@ public:
     static bool createConfig(bool overwrite = false);
     static QVariant readConfig(const QString& key);
     static bool writeConfig(const QString& key, const QVariant& value);
+    static QStringList readServerList();
 };
 
 #endif // STORAGEMANAGER_H

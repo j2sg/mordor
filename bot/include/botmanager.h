@@ -44,6 +44,7 @@ public:
 signals:
     void ready();
     void unregistered();
+    void serverListNotFound();
 public slots:
     void connectToCC();
     void disconnectFromCC();

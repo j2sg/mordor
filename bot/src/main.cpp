@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
 
     QObject::connect(manager, SIGNAL(ready()), manager, SLOT(connectToCC()));
     QObject::connect(manager, SIGNAL(unregistered()), manager, SLOT(registerOnCC()));
+    QObject::connect(manager, SIGNAL(serverListNotFound()), &app, SLOT(quit()));
 
     return app.exec();
 }

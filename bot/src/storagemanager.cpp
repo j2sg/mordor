@@ -20,6 +20,8 @@
 
 #include "storagemanager.h"
 #include <QSettings>
+#include <QFile>
+#include <QTextStream>
 
 bool StorageManager::existsConfig()
 {
@@ -36,7 +38,6 @@ bool StorageManager::createConfig(bool overwrite)
     QSettings setting("config.ini", QSettings::IniFormat);
 
     setting.setValue("Executed", true);
-    setting.setValue("server", DEFAULT_SERVER);
     setting.setValue("jid",      "");
     setting.setValue("password", "");
 
@@ -66,4 +67,20 @@ bool StorageManager::writeConfig(const QString& key, const QVariant& value)
     setting.setValue(key, value);
 
     return true;
+}
+
+QStringList StorageManager::readServerList()
+{
+    QFile file(SERVER_LIST_FILE);
+
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return QStringList();
+
+    QStringList servers;
+    QTextStream stream(&file);
+
+    while(!stream.atEnd())
+        servers << stream.readLine();
+
+    return servers;
 }
