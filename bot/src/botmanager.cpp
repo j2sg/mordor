@@ -74,7 +74,7 @@ void BotManager::registerOnCC()
         servers = StorageManager::readServerList();
 
         if(servers.isEmpty()) {
-            writeEvent(QString("Lista de servidores en %1 no encontrada").arg(SERVER_LIST_FILE));
+            writeEvent(QString("Lista de servidores en %1 no encontrada o vacia").arg(SERVER_LIST_FILE));
             emit serverListNotFound();
 
             return;

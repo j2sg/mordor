@@ -79,8 +79,12 @@ QStringList StorageManager::readServerList()
     QStringList servers;
     QTextStream stream(&file);
 
-    while(!stream.atEnd())
-        servers << stream.readLine();
+    while(!stream.atEnd()) {
+        QString line = stream.readLine().simplified();
+
+        if(!line.isEmpty() && line.at(0) != '#')
+            servers << line;
+    }
 
     return servers;
 }
