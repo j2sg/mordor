@@ -3,6 +3,8 @@
 ######################################################################
 
 TEMPLATE = lib
+TARGET = mordorcore
+VERSION = 0.1.0
 OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build

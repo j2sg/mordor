@@ -10,7 +10,7 @@ RCC_DIR = build
 
 QT += core network xml
 
-DEPENDPATH += . include src ../core
+DEPENDPATH += . include src
 INCLUDEPATH += . include ../core/include
 
 # Input
@@ -25,8 +25,8 @@ HEADERS += \
     include/global.h \
     include/attacker.h
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../core/release/ -lcore
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../core/debug/ -lcore
-else:unix: LIBS += -L$$PWD/../core/ -lcore
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../core/release/ -lmordorcore
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../core/debug/ -lmordorcore
+else:unix: LIBS += -L$$PWD/../core/ -lmordorcore
 
 unix|win32: LIBS += -lqxmpp
