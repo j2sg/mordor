@@ -23,6 +23,9 @@
 
 #include "core_global.h"
 #include <qxmpp/QXmppClient.h>
+#include <QStringList>
+
+#define CREDENTIAL_LENGTH_BY_DEFAULT 10
 
 class CORE_EXPORT XmppRegClient : public QXmppClient
 {
@@ -33,7 +36,7 @@ signals:
     void success(const QString& server, const QString& username, const QString& password);
     void failure(const QString& server, const QString& username, const QString& password);
 public slots:
-    void sendRegistrationRequest(const QString& username, const QString& password);
+    void sendRegistrationRequest();
 private slots:
     void connectedOnClient();
     void iqReceivedOnClient(const QXmppIq& iq);
@@ -42,6 +45,7 @@ private:
     void connectToServer(const QXmppConfiguration& configuration, const QXmppPresence& initialPresence = QXmppPresence());
     void connectToServer(const QString& jid, const QString& password);
     void createConnections();
+    static QStringList generateRandomCredentials(int length = CREDENTIAL_LENGTH_BY_DEFAULT);
 
     QString _server;
     static const int _port = 5222;

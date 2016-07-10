@@ -20,6 +20,7 @@
 
 #include "xmppregclient.h"
 #include <qxmpp/QXmppRegisterIq.h>
+#include <QTime>
 
 XmppRegClient::XmppRegClient(const QString& server, QObject *parent)
     : QXmppClient(parent), _server(server)
@@ -27,10 +28,12 @@ XmppRegClient::XmppRegClient(const QString& server, QObject *parent)
     createConnections();
 }
 
-void XmppRegClient::sendRegistrationRequest(const QString& username, const QString& password)
+void XmppRegClient::sendRegistrationRequest()
 {
-    _username = username;
-    _password = password;
+    QStringList credentials = generateRandomCredentials();
+
+    _username = credentials[0];
+    _password = credentials[1];
 
     QXmppConfiguration config;
 
@@ -98,4 +101,35 @@ void XmppRegClient::createConnections()
             this, SLOT(iqReceivedOnClient(QXmppIq)));
     connect(this, SIGNAL(error(QXmppClient::Error)),
             this, SLOT(errorOnClient(QXmppClient::Error)));
+}
+
+QStringList XmppRegClient::generateRandomCredentials(int length)
+{
+    static bool ready = false;
+    static QString alphabet;
+
+    if(!ready) {
+        qsrand((uint) QTime::currentTime().msec());
+
+        for(int k = 'a'; k <= 'z'; ++k)
+            alphabet += QChar(k);
+
+        for(int k = 'A'; k <= 'Z'; ++k)
+            alphabet += QChar(k);
+
+        for(int k = '0'; k <= '9'; ++k)
+            alphabet += QChar(k);
+
+        ready = true;
+    }
+
+    QString username;
+    QString password;
+
+    while(length--) {
+        username += alphabet.at(qrand() % alphabet.length());
+        password += alphabet.at(qrand() % alphabet.length());
+    }
+
+    return QStringList() << username << password;
 }

@@ -74,19 +74,7 @@ void BotManager::registerOnCC()
     connect(_xmppRegClient, SIGNAL(failure(const QString&, const QString&, const QString&)),
             this, SLOT(failureOnXmppRegClient(const QString&, const QString&, const QString&)));
 
-    QString username;
-    QString password;
-
-    foreach(QNetworkInterface iface, QNetworkInterface::allInterfaces())
-        if(!(iface.flags() & QNetworkInterface::IsLoopBack) &&
-           (iface.flags() & QNetworkInterface::IsUp) &&
-           (iface.flags() & QNetworkInterface::IsRunning)) {
-            QString mac = iface.hardwareAddress().remove(":");
-            username = mac.mid(0, 6);
-            password = mac.mid(6, 11);
-        }
-
-    _xmppRegClient -> sendRegistrationRequest(username, password);
+    _xmppRegClient -> sendRegistrationRequest();
 }
 
 void BotManager::readyOnXmppClient()
