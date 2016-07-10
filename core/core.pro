@@ -12,7 +12,8 @@ RCC_DIR = build
 QT += network xml
 
 DEPENDPATH += . include src
-INCLUDEPATH += . include
+win32: INCLUDEPATH += . include ../qxmpp/include
+else:unix: INCLUDEPATH += . include
 
 # Input
 HEADERS += \
@@ -41,6 +42,7 @@ SOURCES += src/bot.cpp src/xmppclient.cpp \
     src/attack.cpp \
     src/xmppregclient.cpp
 
-LIBS += -lqxmpp
+win32: LIBS += -L../qxmpp/lib -lqxmpp0
+else:unix: LIBS += -lqxmpp
 
 DEFINES += CORE_LIBRARY
