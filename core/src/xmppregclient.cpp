@@ -22,16 +22,17 @@
 #include <qxmpp/QXmppRegisterIq.h>
 #include <QTime>
 
-XmppRegClient::XmppRegClient(const QString& server, QObject *parent)
-    : QXmppClient(parent), _server(server)
+XmppRegClient::XmppRegClient(QObject *parent)
+    : QXmppClient(parent)
 {
     createConnections();
 }
 
-void XmppRegClient::sendRegistrationRequest()
+void XmppRegClient::sendRegistrationRequest(const QString& server)
 {
     QStringList credentials = generateRandomCredentials();
 
+    _server = server;
     _username = credentials[0];
     _password = credentials[1];
 

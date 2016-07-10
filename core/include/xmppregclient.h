@@ -31,12 +31,12 @@ class CORE_EXPORT XmppRegClient : public QXmppClient
 {
     Q_OBJECT
 public:
-    XmppRegClient(const QString& server, QObject *parent = 0);
+    XmppRegClient(QObject *parent = 0);
 signals:
     void success(const QString& server, const QString& username, const QString& password);
     void failure(const QString& server, const QString& username, const QString& password);
 public slots:
-    void sendRegistrationRequest();
+    void sendRegistrationRequest(const QString& server);
 private slots:
     void connectedOnClient();
     void iqReceivedOnClient(const QXmppIq& iq);
