@@ -24,7 +24,7 @@
 #include <QObject>
 #include <QString>
 
-#define RPS_BY_DEFAULT 1
+#define RPS_BY_DEFAULT 10
 
 class QNetworkAccessManager;
 
